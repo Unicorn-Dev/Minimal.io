@@ -22,7 +22,10 @@ def check_key_down_events(event, settings, screen, unicorn, powerballs):
         unicorn.moving_up = True
     elif event.key == pygame.K_DOWN:
         unicorn.moving_down = True
-
+    elif event.key == pygame.K_LEFT:
+        unicorn.moving_left = True
+    elif event.key == pygame.K_RIGHT:
+        unicorn.moving_right = True
 
 def check_key_up_events(event, unicorn):
     """Respond to key unpresses."""
@@ -30,7 +33,10 @@ def check_key_up_events(event, unicorn):
         unicorn.moving_up = False
     elif event.key == pygame.K_DOWN:
         unicorn.moving_down = False
-
+    elif event.key == pygame.K_LEFT:
+        unicorn.moving_left = False
+    elif event.key == pygame.K_RIGHT:
+        unicorn.moving_right = False
 
 def fire_powerball(settings, screen, unicorn, powerballs):
     if len(powerballs) < settings.powerballs_limit:
