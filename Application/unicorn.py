@@ -14,11 +14,9 @@ class Unicorn:
         self.image = self.run_images[self.run_iteration]
         self.rect = self.image.get_rect()
         self.screen_rect = screen.get_rect()
-        self.rect.left = self.screen_rect.left
 
         # Store a decimal value for the unicorn's center.
-        self.centerx = float(self.rect.centerx)
-        self.centery = float(self.screen_rect.centery)
+        self.default_position()
 
         # Start each new unicorn at the left center of the screen.
         self.rect.centerx = self.centerx
@@ -29,6 +27,11 @@ class Unicorn:
         self.moving_down = False
         self.moving_left = False
         self.moving_right = False
+
+    def default_position(self):
+        self.rect.left = self.screen_rect.left
+        self.centerx = float(self.rect.centerx)
+        self.centery = float(self.screen_rect.centery)
 
     def update(self):
         """Update the unicorn's image and position
