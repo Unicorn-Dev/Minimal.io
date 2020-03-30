@@ -13,16 +13,16 @@ def run_game():
     pygame.display.set_caption(settings.name)
     pygame.display.set_icon(settings.favicon)
 
-    # Make a unicorn and a group to store bullets in.
+    # Make a unicorn and a group to store powerballs in.
     unicorn = Unicorn(settings, screen)
-    bullets = Group()
+    powerballs = Group()
 
     # Start the main loop for the game.
     while True:
-        gf.check_events(settings, screen, unicorn, bullets)
+        gf.check_events(settings, screen, unicorn, powerballs)
         unicorn.update()
-        gf.update_bullets(bullets, settings)
-        gf.update_screen(settings, screen, unicorn, bullets)
+        gf.update_powerballs(powerballs, settings)
+        gf.update_screen(settings, screen, unicorn, powerballs)
 
 
 run_game()

@@ -15,11 +15,22 @@ class Settings:
         self.favicon = pygame.image.load("images/favicon.png")
 
         # Ship settings
-        self.ship_speed_factor = 1
+        self.unicorn_speed = 0.5
 
-        # Bullet settings
-        self.bullet_speed_factor = 2
-        self.bullet_width = 15
-        self.bullet_height = 3
-        self.bullet_color = (255, 255, 33)
-        self.bullets_limit = 3
+        # powerball settings
+        self.powerball_speed_factor = 0.8
+        self.powerball_width = 15
+        self.powerball_height = 3
+        self.powerballs_limit = 5
+        self.powerball_image = pygame.image.load('images/powerball.png')
+        self.powerball_image = pb_scale(self.screen_width, self.powerball_image)
+        self.powerball_rect = self.powerball_image.get_rect()
+
+
+def pb_scale(width, image):
+    """Масштабирование картинки ракеты в зависимости от размера окна."""
+    rect = image.get_rect()
+    scale = rect[3] / rect[2]
+    width = width // 50
+    height = int(width * scale)
+    return pygame.transform.scale(image, (width, height))
