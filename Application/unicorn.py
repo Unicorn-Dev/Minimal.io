@@ -14,15 +14,18 @@ class Unicorn:
         self.screen_rect = screen.get_rect()
 
         # Store a decimal value for the ship's center.
-        self.center = float(self.rect.centery)
+        self.centery = float(self.rect.centery)
+        self.centerx = float(self.rect.centerx)
 
         # Start each new ship at the bottom center of the screen.
-        self.rect.centery = self.center
+        self.rect.centery = self.centery
         self.rect.left = self.screen_rect.left
 
         # Movement flag
         self.moving_up = False
         self.moving_down = False
+        self.moving_left = False
+        self.moving_right = False
 
         # Fire flag
         self.fire = False
@@ -31,12 +34,17 @@ class Unicorn:
         """Update the ship's position based on the movement flags."""
         # Update the ship's center value, not the rect.
         if self.moving_up and self.rect.top > 0:
-            self.center -= self.settings.ship_speed_factor
+            self.centery -= self.settings.ship_speed_factor
         if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
-            self.center += self.settings.ship_speed_factor
+            self.centery += self.settings.ship_speed_factor
+        if self.moving_left and self.rect.left > 0:
+            self.centerx -= self.settings.ship_speed_factor
+        if self.moving_right and self.rect.right < (self.settings.screen_width * 0.2):
+            self.centerx += self.settings.ship_speed_factor
 
         # Update rect object from self.center.
-        self.rect.centery = self.center
+        self.rect.centery = self.centery
+        self.rect.centerx = self.centerx
 
     def draw(self):
         """Draw the ship at its current location."""

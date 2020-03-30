@@ -22,6 +22,10 @@ def check_key_down_events(event, settings, screen, unicorn, bullets):
         unicorn.moving_up = True
     elif event.key == pygame.K_DOWN:
         unicorn.moving_down = True
+    elif event.key == pygame.K_LEFT:
+        unicorn.moving_left = True
+    elif event.key == pygame.K_RIGHT:
+        unicorn.moving_right = True
 
 
 def check_key_up_events(event, unicorn):
@@ -30,6 +34,10 @@ def check_key_up_events(event, unicorn):
         unicorn.moving_up = False
     elif event.key == pygame.K_DOWN:
         unicorn.moving_down = False
+    elif event.key == pygame.K_LEFT:
+        unicorn.moving_left = False
+    elif event.key == pygame.K_RIGHT:
+        unicorn.moving_right = False
 
 
 def fire_bullet(settings, screen, unicorn, bullets):
