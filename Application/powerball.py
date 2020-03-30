@@ -11,7 +11,7 @@ class Powerball(Sprite):
 
         # Create a powerball rect at (0, 0) and then set correct position.
         self.image = settings.powerball_image
-        self.rect = settings.powerball_rect
+        self.rect = settings.powerball_image.get_rect()
 
         # Store the powerball's position as a decimal value.
         self.x = float(unicorn.rect.right)
@@ -23,7 +23,6 @@ class Powerball(Sprite):
 
     def update(self):
         """Move the powerball up the screen."""
-        self.rect = self.image.get_rect()
         self.x += self.speed
         self.rect.x = self.x
         self.rect.y = self.y

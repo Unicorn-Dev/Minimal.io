@@ -1,6 +1,6 @@
 import pygame
 from pygame.sprite import Group
-from Application.settings import Settings
+from Application.game_settings import Settings
 from Application.unicorn import Unicorn
 import Application.game_functions as gf
 
