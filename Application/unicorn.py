@@ -8,8 +8,8 @@ class Unicorn:
         self.settings = settings
 
         # Load the ship image and get its rect.
-        self.image = pygame.image.load('images/unicorn.png')
-        self.image = pygame.transform.scale(self.image, self.scale_size())
+        self.run_images = get_run_images(self)
+        self.image = self.run_images[0]
         self.rect = self.image.get_rect()
         self.screen_rect = screen.get_rect()
 
@@ -23,6 +23,9 @@ class Unicorn:
         # Movement flag
         self.moving_up = False
         self.moving_down = False
+
+        # Fire flag
+        self.fire = False
 
     def update(self):
         """Update the ship's position based on the movement flags."""
@@ -39,10 +42,16 @@ class Unicorn:
         """Draw the ship at its current location."""
         self.screen.blit(self.image, self.rect)
 
-    def scale_size(self):
-        """Масштабирование картинки ракеты в зависимости от размера окна."""
-        rect = self.image.get_rect()
-        scale = rect[3] / rect[2]
-        width = self.settings.screen_width // 15
-        height = int(width * scale)
-        return width, height
+
+def scale_size(self, image):
+    """Масштабирование картинки ракеты в зависимости от размера окна."""
+    rect = image.get_rect()
+    scale = rect[3] / rect[2]
+    width = self.settings.screen_width // 15
+    height = int(width * scale)
+    return width, height
+
+
+def get_run_images(self):
+    tmp = [pygame.image.load(f'images/run/{i + 1}.png') for i in range(5)]
+    return [pygame.transform.scale(im, scale_size(self, im)) for im in tmp]
