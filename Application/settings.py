@@ -21,7 +21,7 @@ class Settings:
         self.powerball_speed_factor = 0.8
         self.powerball_width = 15
         self.powerball_height = 3
-        self.powerballs_limit = 5
+        self.powerballs_limit = 3
         self.powerball_image = pygame.image.load('images/powerball.png')
         self.powerball_image = pb_scale(self.screen_width, self.powerball_image)
         self.powerball_rect = self.powerball_image.get_rect()

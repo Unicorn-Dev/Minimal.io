@@ -15,17 +15,18 @@ class Powerball(Sprite):
 
         # Store the powerball's position as a decimal value.
         self.x = float(unicorn.rect.right)
+        self.y = unicorn.rect.top
         self.rect.right = self.x
-        self.rect.top = unicorn.rect.top
+        self.rect.top = self.y
 
         self.speed = settings.powerball_speed_factor
 
     def update(self):
         """Move the powerball up the screen."""
-        # Update the decimal position of the powerball.
+        self.rect = self.image.get_rect()
         self.x += self.speed
-        # Update the rect position.
         self.rect.x = self.x
+        self.rect.y = self.y
 
     def draw(self):
         """Draw the powerball to the screen."""

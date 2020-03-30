@@ -27,6 +27,7 @@ def check_key_down_events(event, settings, screen, unicorn, powerballs):
     elif event.key == pygame.K_RIGHT:
         unicorn.moving_right = True
 
+
 def check_key_up_events(event, unicorn):
     """Respond to key unpresses."""
     if event.key == pygame.K_UP:
@@ -38,6 +39,7 @@ def check_key_up_events(event, unicorn):
     elif event.key == pygame.K_RIGHT:
         unicorn.moving_right = False
 
+
 def fire_powerball(settings, screen, unicorn, powerballs):
     if len(powerballs) < settings.powerballs_limit:
         new_powerball = Powerball(settings, screen, unicorn)
@@ -46,11 +48,10 @@ def fire_powerball(settings, screen, unicorn, powerballs):
 
 def update_powerballs(powerballs, settings):
     """Обновляет позиции пуль и уничтожает старые пули."""
-    # Обновление позиций пуль.
     powerballs.update()
     # Удаление пуль, вышедших за край экрана.
     for powerball in powerballs.copy():
-        if powerball.rect.left > settings.screen_width:
+        if powerball.x > settings.screen_width:
             powerballs.remove(powerball)
 
 

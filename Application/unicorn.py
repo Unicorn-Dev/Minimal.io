@@ -34,7 +34,7 @@ class Unicorn:
         """Update the unicorn's image and position
          based on the movement flags."""
         if self.moving_up == self.moving_down:
-            self.run_iteration += 0.009
+            self.run_iteration += 0.013
             if self.run_iteration >= len(self.run_images):
                 self.run_iteration = 0
             self.image = self.run_images[int(self.run_iteration)]
