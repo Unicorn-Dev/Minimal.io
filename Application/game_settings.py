@@ -13,12 +13,15 @@ class Settings:
         self.bg_color = (6, 0, 46)
         self.name = "Unicorn VS Planes"
         self.favicon = pygame.image.load("images/favicon.png")
+        self.FPS = 60
 
         # Ship settings
-        self.unicorn_speed = 0.5
+        self.unicorn_speed = self.FPS // 8
+        self.unicorn_run_refresh = 0.5  # Should be <= 1.
+        self.unicorn_border = self.screen_width * 0.2
 
         # powerball settings
-        self.powerball_speed_factor = 0.8
+        self.powerball_speed_factor = self.FPS // 4
         self.powerball_width = 15
         self.powerball_height = 3
         self.powerballs_limit = 3

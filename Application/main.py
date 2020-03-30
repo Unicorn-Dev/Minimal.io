@@ -12,6 +12,7 @@ def run_game():
     screen = pygame.display.set_mode(settings.screen_dimensions)
     pygame.display.set_caption(settings.name)
     pygame.display.set_icon(settings.favicon)
+    clock = pygame.time.Clock()
 
     # Make a unicorn and a group to store powerballs in.
     unicorn = Unicorn(settings, screen)
@@ -23,6 +24,7 @@ def run_game():
         unicorn.update()
         gf.update_powerballs(powerballs, settings)
         gf.update_screen(settings, screen, unicorn, powerballs)
+        clock.tick(settings.FPS)
 
 
 run_game()

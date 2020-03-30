@@ -16,6 +16,8 @@ def check_events(settings, screen, unicorn, powerballs):
 
 def check_key_down_events(event, settings, screen, unicorn, powerballs):
     """Respond to key presses."""
+    if event.key == pygame.K_q:
+        sys.exit()
     if event.key == pygame.K_SPACE:
         fire_powerball(settings, screen, unicorn, powerballs)
     if event.key == pygame.K_UP:

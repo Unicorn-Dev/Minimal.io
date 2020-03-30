@@ -14,15 +14,15 @@ class Unicorn:
         self.image = self.run_images[self.run_iteration]
         self.rect = self.image.get_rect()
         self.screen_rect = screen.get_rect()
+        self.rect.left = self.screen_rect.left
 
         # Store a decimal value for the unicorn's center.
-        self.centery = float(self.rect.centery)
         self.centerx = float(self.rect.centerx)
+        self.centery = float(self.screen_rect.centery)
 
         # Start each new unicorn at the left center of the screen.
-        self.rect.centery = self.centery
         self.rect.centerx = self.centerx
-        self.rect.left = self.screen_rect.left
+        self.rect.centery = self.centery
 
         # Movement flags
         self.moving_up = False
@@ -33,29 +33,36 @@ class Unicorn:
     def update(self):
         """Update the unicorn's image and position
          based on the movement flags."""
-        if self.moving_up == self.moving_down:
-            self.run_iteration += 0.013
+        self.update_position()
+        self.update_animation()
+
+        # Update rect object from self.center.
+        self.rect.centerx = self.centerx
+        self.rect.centery = self.centery
+
+    def update_position(self):
+        if self.moving_up and self.rect.top > 0:
+            self.centery -= self.settings.unicorn_speed
+        if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
+            self.centery += self.settings.unicorn_speed
+        if self.moving_left and self.rect.left > 0:
+            self.centerx -= self.settings.unicorn_speed
+        if self.moving_right and self.rect.right < self.settings.unicorn_border:
+            self.centerx += self.settings.unicorn_speed
+
+    def update_animation(self):
+        if self.moving_up and self.rect.top > 0 and not self.moving_down:
+            self.run_iteration = 0
+            self.image = self.fly_images[0]
+        elif self.moving_down != self.moving_up \
+                and self.rect.bottom < self.screen_rect.bottom:
+            self.run_iteration = 0
+            self.image = self.fly_images[1]
+        else:
+            self.run_iteration += self.settings.unicorn_run_refresh
             if self.run_iteration >= len(self.run_images):
                 self.run_iteration = 0
             self.image = self.run_images[int(self.run_iteration)]
-        else:
-            if self.moving_up and self.rect.top > 0:
-                self.centery -= self.settings.unicorn_speed
-                self.run_iteration = 0
-                self.image = self.fly_images[0]
-            if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
-                self.centery += self.settings.unicorn_speed
-                self.run_iteration = 0
-                self.image = self.fly_images[1]
-        if self.moving_left and self.rect.left > 0:
-            self.centerx -= self.settings.unicorn_speed
-        if self.moving_right and self.rect.right < (self.settings.screen_width * 0.2):
-            self.centerx += self.settings.unicorn_speed
-
-        # Update rect object from self.center.
-        self.rect = self.image.get_rect()
-        self.rect.centery = self.centery
-        self.rect.centerx = self.centerx
 
     def draw(self):
         """Draw the unicorn at its current location."""
