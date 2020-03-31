@@ -1,26 +1,30 @@
 import sys
 from time import sleep
 import pygame
-from Application.powerball import Powerball
-from Application.plane import Plane
+from Application.objects.powerball import Powerball
+from Application.objects.plane import Plane
 
 
-def check_events(settings, screen, unicorn, powerballs):
+def check_events(settings, screen, stats, button, unicorn, planes, powerballs):
     """Respond to key presses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_key_down_events(event, settings, screen, unicorn, powerballs)
+            check_key_down_events(event, settings, screen, stats, unicorn, planes, powerballs)
         elif event.type == pygame.KEYUP:
             check_key_up_events(event, unicorn)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            check_button(settings, screen, stats, button, unicorn, planes, powerballs)
 
 
-def check_key_down_events(event, settings, screen, unicorn, powerballs):
+def check_key_down_events(event, settings, screen, stats, unicorn, planes, powerballs):
     """Respond to key presses."""
     if event.key == pygame.K_q:
         sys.exit()
-    if event.key == pygame.K_SPACE:
+    if event.key == pygame.K_p:
+        start_game(settings, screen, stats, unicorn, planes, powerballs)
+    if event.key == pygame.K_SPACE and stats.game_active:
         fire_powerball(settings, screen, unicorn, powerballs)
     if event.key == pygame.K_UP:
         unicorn.moving_up = True
@@ -42,6 +46,20 @@ def check_key_up_events(event, unicorn):
         unicorn.moving_left = False
     elif event.key == pygame.K_RIGHT:
         unicorn.moving_right = False
+
+
+def check_button(settings, screen, stats, button, unicorn, planes, powerballs):
+    """Запускает новую игру при нажатии кнопки Play."""
+    button_clicked = button.rect.collidepoint(pygame.mouse.get_pos())
+    if button_clicked and not stats.game_active:
+        start_game(settings, screen, stats, unicorn, planes, powerballs)
+
+
+def start_game(settings, screen, stats, unicorn, planes, powerballs):
+    stats.game_active = True
+    pygame.mouse.set_visible(False)
+    stats.reset_stats()
+    default_state(settings, screen, unicorn, planes, powerballs)
 
 
 def fire_powerball(settings, screen, unicorn, powerballs):
@@ -132,23 +150,31 @@ def unicorn_hit(settings, stats, screen, unicorn, planes, powerballs):
     if stats.lifes_left > 0:
         # Уменьшение ships_left.
         stats.lifes_left -= 1
-        # Очистка списков пришельцев и пуль.
-        planes.empty()
-        powerballs.empty()
-        # Создание нового флота и размещение корабля в центре.
-        create_fleet(settings, screen, unicorn, planes)
-        unicorn.default_position()
+        default_state(settings, screen, unicorn, planes, powerballs)
         # Пауза.
         sleep(0.5)
     else:
-        stats.game_over = True
+        stats.game_active = False
+        stats.first_game = False
+        pygame.mouse.set_visible(True)
 
 
-def update_screen(settings, screen, unicorn, planes, powerballs):
+def default_state(settings, screen, unicorn, planes, powerballs):
+    # Очистка списков пришельцев и пуль.
+    planes.empty()
+    powerballs.empty()
+    # Создание нового флота и размещение корабля в центре.
+    create_fleet(settings, screen, unicorn, planes)
+    unicorn.default_position()
+
+
+def update_screen(settings, screen, stats, button, unicorn, planes, powerballs):
     """Update images on the screen and flip to the new screen."""
     # Redraw the screen during each pass through the loop.
-    screen.fill(settings.bg_color)
+    screen.blit(settings.bg_image, settings.bg_rect)
     unicorn.draw()  # Redraw unicorn.
     powerballs.draw(screen)
     planes.draw(screen)
+    if not stats.game_active:
+        button.draw()
     pygame.display.flip()

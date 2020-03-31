@@ -10,7 +10,9 @@ class Settings:
         self.screen_width = 800
         self.screen_height = 480
         self.screen_dimensions = (self.screen_width, self.screen_height)
-        self.bg_color = (6, 0, 46)
+        self.bg_image = pygame.image.load('images/backgrounds/3.png')
+        self.bg_image = bg_scale(self.screen_height, self.bg_image)
+        self.bg_rect = self.bg_image.get_rect()
         self.name = "Unicorn VS Planes"
         self.favicon = pygame.image.load("images/favicon.png")
         self.FPS = 60
@@ -40,4 +42,12 @@ def pb_scale(width, image):
     scale = rect[3] / rect[2]
     width = width // 50
     height = int(width * scale)
+    return pygame.transform.scale(image, (width, height))
+
+
+def bg_scale(height, image):
+    """Масштабирование картинки ракеты в зависимости от размера окна."""
+    rect = image.get_rect()
+    scale = rect[2] / rect[3]
+    width = int(height * scale)
     return pygame.transform.scale(image, (width, height))
