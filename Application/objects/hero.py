@@ -2,25 +2,32 @@ import pygame.draw as draw
 
 
 class Hero:
+    __instance = None
+
     def __init__(self, settings, screen):
-        """Initialize the unicorn and set its starting position."""
-        self.screen = screen
-        self.screen_rect = screen.get_rect()
+        if not Hero.__instance:
+            """Initialize the unicorn and set its starting position."""
+            self.screen = screen
+            self.screen_rect = screen.get_rect()
 
-        # Load the unicorn's running and flying images and get its' rect.
-        self.radius = settings.hero_radius
-        self.color = settings.hero_color
-        self.speed = settings.hero_speed
-        self.border = settings.hero_border
+            # Load the unicorn's running and flying images and get its' rect.
+            self.radius = settings.hero_radius
+            self.color = settings.hero_color
+            self.speed = settings.hero_speed
+            self.border = settings.hero_border
 
-        # Start each new unicorn at the left center of the screen.
-        self.move_to_default_position()
+            # Start each new unicorn at the left center of the screen.
+            self.move_to_default_position()
 
-        # Movement flags
-        self.moving_up = False
-        self.moving_down = False
-        self.moving_left = False
-        self.moving_right = False
+            # Movement flags
+            self.moving_up = False
+            self.moving_down = False
+            self.moving_left = False
+            self.moving_right = False
+
+            Hero.__instance = self
+        else:
+            raise Exception("Hero is a singleton!")
 
     def move_to_default_position(self):
         self.cx = float(self.radius)  # x coordinate of center
