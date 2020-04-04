@@ -24,7 +24,10 @@ class Hero:
             self.moving_down = False
             self.moving_left = False
             self.moving_right = False
-
+            # type of his bullets, name the same ass bullet class name
+            self.bullet_type = "Bullet"
+            # to make app check easier and for hard players)
+            self.not_fire = False
             Hero.__instance = self
         else:
             raise Exception("Hero is a singleton!")

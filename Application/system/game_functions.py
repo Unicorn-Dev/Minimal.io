@@ -4,6 +4,7 @@ from math import sqrt
 from functools import lru_cache
 import pygame
 from Application.objects.bullet import Bullet
+from Application.objects.bullet import FastBullet
 from Application.objects.enemy import Enemy
 
 
@@ -29,8 +30,17 @@ def check_key_down_events(event, settings, screen, stats, hero, enemies, bullets
     elif event.key == pygame.K_ESCAPE and stats.game_active != stats.pause:
         set_pause(stats, not stats.pause)
     elif stats.game_active:
-        if event.key == pygame.K_SPACE:
-            fire_bullet(settings, screen, hero, bullets)
+        # for test, remove in future
+        # you can change bullets type if press f (for fast), b (for big) or n (for normal)
+        if event.key == pygame.K_n:
+            hero.bullet_type = "Bullet"
+        if event.key == pygame.K_f:
+            hero.bullet_type = "FastBullet"
+        if event.key == pygame.K_b:
+            hero.bullet_type = "BigBullet"
+        #
+        if event.key == pygame.K_EQUALS:
+            hero.not_fire = not hero.not_fire
         if event.key == pygame.K_UP:
             hero.moving_up = True
         elif event.key == pygame.K_DOWN:
@@ -82,10 +92,12 @@ def set_pause(stats, pause):
     pygame.mouse.set_visible(pause)
 
 
-def fire_bullet(settings, screen, hero, bullets):
-    if len(bullets) < settings.bullets_limit:
-        bullet = Bullet(settings, screen, hero)
-        bullets.add(bullet)
+def fire_bullet(settings, screen, hero, bullets, frame):
+    """"Create an bullet if frame number is big enough, return True in that case, else return False"""
+    if frame >= settings.bullet_create_frame[hero.bullet_type] and not hero.not_fire:
+        bullets.add(settings.bullet_constructors[hero.bullet_type](settings, screen, hero))
+        return True
+    return False
 
 
 def create_fleet(settings, screen, enemies):
@@ -103,14 +115,14 @@ def create_fleet(settings, screen, enemies):
 @lru_cache(maxsize=1)
 def get_number_enemies_in_row(settings):
     """Вычисляет количество пришельцев в ряду."""
-    available_space_y = settings.screen_height - 2 * settings.enemy_radius
+    available_space_y = settings.battle_screen_height - 2 * settings.enemy_radius
     return available_space_y // (4 * settings.enemy_radius)
 
 
 @lru_cache(maxsize=1)
 def get_number_rows(settings):
     """Определяет количество рядов, помещающихся на экране."""
-    available_space_x = (settings.screen_width -
+    available_space_x = (settings.battle_screen_width -
                          6 * settings.enemy_radius - settings.hero_border)
     return available_space_x // (3 * settings.enemy_radius)
 
@@ -118,7 +130,7 @@ def get_number_rows(settings):
 def create_enemy(settings, screen, enemies, enemy_number, row):
     """Создает пришельца и размещает его в ряду."""
     enemy = Enemy(settings, screen, row)
-    enemy.cx = settings.screen_width - settings.enemy_radius * (1 + 3 * row)
+    enemy.cx = settings.battle_screen_width - settings.enemy_radius * (1 + 3 * row)
     enemy.cy = enemy.radius * (1 + 4 * enemy_number)
     enemies.add(enemy)
 
@@ -128,16 +140,19 @@ def update_bullets(settings, screen, stats, bullets, enemies):
     bullets.update()
     # Удаление пуль, вышедших за край экрана.
     for bullet in bullets.copy():
-        if bullet.cx - bullet.radius > settings.screen_width:
+        if bullet.cx - bullet.radius > settings.battle_screen_width:
             bullets.remove(bullet)
     check_fire_collisions(settings, screen, stats, enemies, bullets)
 
 
 def check_fire_collisions(settings, screen, stats, enemies, bullets):
     for collision in collisions_of(bullets, enemies):
+        collision[1].life -= collision[0].damage
+        collision[1].set_radius()
+        if collision[1].radius < settings.battle_screen_width / 50:
+            stats.last_score += collision[1].reward / settings.battle_screen_width
+            enemies.remove(collision[1])
         bullets.remove(collision[0])
-        collision[1].radius //= 2
-        stats.last_score += 1
     if len(enemies) == 0:
         bullets.empty()
         create_fleet(settings, screen, enemies)
@@ -164,6 +179,7 @@ def is_collision(object1, object2):
 
 
 def enemy_took_hero(hero, enemies):
+    """Сhecks whether one of the enemies was able to touch the hero."""
     for enemy in enemies:
         if is_collision(hero, enemy):
             return True
@@ -171,7 +187,7 @@ def enemy_took_hero(hero, enemies):
 
 
 def enemies_flied(enemies):
-    """Проверяет, добрались ли пришельцы до нижнего края экрана."""
+    """Проверяет, добрались ли enemy balls до нижнего края экрана."""
     for enemy in enemies.sprites():
         if enemy.cx <= enemy.radius:
             return True

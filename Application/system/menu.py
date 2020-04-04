@@ -8,8 +8,7 @@ class Menu:
         if not Menu.__instance:
             self.screen = screen
             self.stats = stats
-
-            self.height = settings.screen_height
+            self.height = settings.battle_screen_height
             self.menu_color = settings.bg_color
             self.text_color = (94, 82, 86)
             self.font = pygame.font.SysFont(None, 64)
@@ -67,7 +66,7 @@ class MenuBuilder:
         elif stats.first_game:
             return """Get ready, Player One!"""
         else:
-            return f"""Your score is {stats.last_score}!"""
+            return f"""Your score is {int (stats.last_score)}!"""
 
     def get_buttons(self, screen, stats):
         buttons = list()
