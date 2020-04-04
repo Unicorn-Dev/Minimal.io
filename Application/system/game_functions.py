@@ -118,7 +118,7 @@ def get_number_rows(settings):
 def create_enemy(settings, screen, enemies, enemy_number, row):
     """Создает пришельца и размещает его в ряду."""
     enemy = Enemy(settings, screen, row)
-    enemy.cx = settings.screen_width - enemy.radius * (1 + 3 * row)
+    enemy.cx = settings.screen_width - settings.enemy_radius * (1 + 3 * row)
     enemy.cy = enemy.radius * (1 + 4 * enemy_number)
     enemies.add(enemy)
 
@@ -136,7 +136,7 @@ def update_bullets(settings, screen, stats, bullets, enemies):
 def check_fire_collisions(settings, screen, stats, enemies, bullets):
     for collision in collisions_of(bullets, enemies):
         bullets.remove(collision[0])
-        enemies.remove(collision[1])
+        collision[1].radius //= 2
         stats.last_score += 1
     if len(enemies) == 0:
         bullets.empty()

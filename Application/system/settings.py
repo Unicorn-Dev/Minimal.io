@@ -26,14 +26,14 @@ class Settings:
 
             # bullet settings
             self.bullet_radius = self.hero_radius // 8
-            self.bullet_speed = self.FPS // 4
+            self.bullet_speed = self.FPS / 4
             self.bullets_limit = 4
 
             # enemy settings
             self.enemy_radius = self.screen_height // 15
             self.enemy_color = (76, 76, 76)
-            self.enemy_horizontal_speed = self.FPS // 60
-            self.enemy_vertical_speed = self.FPS // 7
+            self.enemy_horizontal_speed = self.FPS / 60
+            self.enemy_vertical_speed = self.FPS / 7
 
             Settings.__instance = self
         else:

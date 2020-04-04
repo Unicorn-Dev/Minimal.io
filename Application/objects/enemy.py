@@ -17,7 +17,6 @@ class Enemy(Sprite):
         self.speed_x = settings.enemy_horizontal_speed
         self.speed_y = uniform(0, settings.enemy_vertical_speed)
         self.direction = -1
-        self.row = row
 
         # Сохранение точной позиции пришельца.
         self.cx = settings.screen_width - self.radius * 2
