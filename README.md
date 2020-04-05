@@ -10,7 +10,7 @@
 
 ## Архитектура программы
 
-Классовая UML-диаграмма программа доступна [в данном репозитории](https://github.com/ShieldVP/UnicornVsPlanes/blob/new_ver_dev/UML.png) и [на данном сайте](https://www.lucidchart.com/documents/edit/079d5591-6cf0-497f-a332-7f91954b2154/0_0?shared=true#?folder_id=home&browser=icon).
+Классовая UML-диаграмма программа доступна [в данном репозитории](https://github.com/Unicorn-Dev/Minimal.io/blob/new_ver_dev/UML.png) и [на данном сайте](https://www.lucidchart.com/documents/edit/079d5591-6cf0-497f-a332-7f91954b2154/0_0?shared=true#?folder_id=home&browser=icon).
 
 ## Запуск игры
 Для начала необходимо установить все пакеты по списку из requirements.txt коммандой:
@@ -32,4 +32,4 @@ $ python3 main.py
 ## Обратная связь
 Все пожелания и замечания можно писать в телеграме @AlexFreik, @cosdar.
 
-## Правила игры можно найти [здесь](https://github.com/ShieldVP/UnicornVsPlanes/blob/new_ver_dev/HELP.md).
+## Правила игры можно найти [здесь](https://github.com/Unicorn-Dev/Minimal.io/blob/new_ver_dev/HELP.md).
