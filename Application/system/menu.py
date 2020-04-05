@@ -30,7 +30,7 @@ class Menu:
         button.draw()
 
     def show(self):
-        director = Director()
+        director = MenuDirector()
         if self.stats.pause:
             director.set_builder(PauseMenuBuilder())
         elif self.stats.first_game:
@@ -40,7 +40,7 @@ class Menu:
         return director.manage(self.screen, self.stats, self)
 
 
-class Director:
+class MenuDirector:
     def set_builder(self, builder):
         self.__builder = builder
 
