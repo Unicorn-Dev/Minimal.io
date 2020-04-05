@@ -17,9 +17,17 @@
 
 $ pip install -r requirements.txt
 
+или
+
+$ pip3 install -r requirements.txt
+
 После чего запустить файл main.py интерпретатором Python (для пользователей mac необходима версия Python 3.7.2, иначе работоспосбность программы разработчиками не гарантируется):
 
 $ python main.py
+
+или
+
+$ python3 main.py
 
 ## Обратная связь
 Все пожелания и замечания можно писать в телеграме @AlexFreik, @cosdar.
