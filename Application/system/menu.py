@@ -65,7 +65,15 @@ class Director:
         return (menu.height - 2 * buttons[0].height) // (len(buttons) + 1)
 
 
-class StartMenuBuilder:
+class MenuBuilder:
+    def get_text(self, stats):
+        pass
+
+    def get_buttons(self, screen):
+        pass
+
+
+class StartMenuBuilder(MenuBuilder):
     def get_text(self, stats):
         return """Get ready, Player One!"""
 
@@ -76,7 +84,7 @@ class StartMenuBuilder:
         return buttons
 
 
-class PauseMenuBuilder:
+class PauseMenuBuilder(MenuBuilder):
     def get_text(self, stats):
         return """Game paused."""
 
@@ -88,7 +96,7 @@ class PauseMenuBuilder:
         return buttons
 
 
-class NewGameMenuBuilder:
+class NewGameMenuBuilder(MenuBuilder):
     def get_text(self, stats):
         return f"""Your score is {int (stats.last_score)}!"""
 
