@@ -30,17 +30,23 @@ class Menu:
         button.draw()
 
     def show(self):
-        director = Director(MenuBuilder())
+        director = Director()
+        if self.stats.pause:
+            director.set_builder(PauseMenuBuilder())
+        elif self.stats.first_game:
+            director.set_builder(StartMenuBuilder())
+        else:
+            director.set_builder(NewGameMenuBuilder())
         return director.manage(self.screen, self.stats, self)
 
 
 class Director:
-    def __init__(self, builder):
+    def set_builder(self, builder):
         self.__builder = builder
 
     def manage(self, screen, stats, menu):
         screen.fill(menu.menu_color)
-        buttons = self.__builder.get_buttons(screen, stats)
+        buttons = self.__builder.get_buttons(screen)
 
         y = self.get_first_y(menu, buttons)
         screen_rect = screen.get_rect()
@@ -59,22 +65,36 @@ class Director:
         return (menu.height - 2 * buttons[0].height) // (len(buttons) + 1)
 
 
-class MenuBuilder:
+class StartMenuBuilder:
     def get_text(self, stats):
-        if stats.pause:
-            return """Game paused."""
-        elif stats.first_game:
-            return """Get ready, Player One!"""
-        else:
-            return f"""Your score is {int (stats.last_score)}!"""
+        return """Get ready, Player One!"""
 
-    def get_buttons(self, screen, stats):
+    def get_buttons(self, screen):
         buttons = list()
-        if stats.pause:
-            buttons.append(Button(screen, "Continue"))
-            buttons.append(Button(screen, "Restart"))
-        else:
-            buttons.append(Button(screen, "Play"))
+        buttons.append(Button(screen, "Play"))
+        buttons.append(Button(screen, "Quit"))
+        return buttons
+
+
+class PauseMenuBuilder:
+    def get_text(self, stats):
+        return """Game paused."""
+
+    def get_buttons(self, screen):
+        buttons = list()
+        buttons.append(Button(screen, "Continue"))
+        buttons.append(Button(screen, "Restart"))
+        buttons.append(Button(screen, "Quit"))
+        return buttons
+
+
+class NewGameMenuBuilder:
+    def get_text(self, stats):
+        return f"""Your score is {int (stats.last_score)}!"""
+
+    def get_buttons(self, screen):
+        buttons = list()
+        buttons.append(Button(screen, "Play"))
         buttons.append(Button(screen, "Quit"))
         return buttons
 
