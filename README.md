@@ -1,5 +1,5 @@
 # Игра Minimal.io
-Это кроссплатформенная игра Minimal.io. При создании авторов вдохновила игра SuperBlust.
+Это кроссплатформенная игра Minimal.io. При создании авторов вдохновила игра SuperBlust. В качастве базового каркаса игры была взята игра alliens invasion из учебника Python Crash Course a hands-on, Project-Based Introduction to Programming by Eric Matthes
 На данный момент есть реализация игры на Python (только на одного игрока).
 
 ## В стадии разработки
