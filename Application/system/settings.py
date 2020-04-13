@@ -1,4 +1,3 @@
-import pygame.image as image
 from Application.objects import bullet
 
 
@@ -19,21 +18,23 @@ class Settings:
             self.app_screen_dimensions = (self.app_screen_width, self.app_screen_height)
             self.bg_color = (242, 235, 227)
             self.name = "Minimal.io"
-            self.FPS = 60
+            # user for update screen, inner for inner calculations
+            self.userFPS = 30
+            self.innerFPS = 200
 
             # hero settings
             self.lifes_limit = 3
             self.hero_radius = self.battle_screen_height // 12
             self.hero_color = (201, 160, 138)
-            self.hero_speed = self.FPS // 8
+            self.hero_speed = 450 / self.innerFPS
             self.hero_border = self.battle_screen_width // 5
 
             # bullet settings
             self.bullet_radius = self.hero_radius // 8
-            self.bullet_speed = self.FPS / 6
+            self.bullet_speed = 600 / self.innerFPS
             # for function that create bullets each next bullet_create_frame frame
             # 10 - for Bullet, 13 - for FastBullet
-            self.bullet_create_frame = {"Bullet": 10, "FastBullet": 10, "BigBullet": 15}
+            self.BulletPerSecond = {"Bullet": 6, "FastBullet": 6, "BigBullet": 4}
             # Create an list of copy constructors for bullets
             self.bullet_constructors = {
                 "Bullet": bullet.Bullet,
@@ -44,8 +45,8 @@ class Settings:
             # enemy settings
             self.enemy_radius = self.battle_screen_height // 15
             self.enemy_color = (76, 76, 76)
-            self.enemy_horizontal_speed = self.FPS / 60
-            self.enemy_vertical_speed = self.FPS / 7
+            self.enemy_horizontal_speed = 60 / self.innerFPS
+            self.enemy_vertical_speed = 450 / self.innerFPS
 
             Settings.__instance = self
         else:

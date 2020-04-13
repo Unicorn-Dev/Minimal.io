@@ -28,23 +28,18 @@ def run_game():
     enemies = Group()
     gf.create_fleet(settings, screen, enemies)
 
-    # define game frame counter for bullet
-    game_frame_counter = 0
-
     # Start the main loop for the game.
     while True:
         gf.check_events(settings, screen, stats, buttons, hero, enemies, bullets)
         if stats.game_active:
             hero.update()
-            if gf.fire_bullet(settings, screen, hero, bullets, game_frame_counter):
-                game_frame_counter = 0
+            gf.fire_bullet(settings, screen, hero, bullets)
             gf.update_bullets(settings, screen, stats, bullets, enemies)
             gf.update_enemies(settings, stats, screen, hero, enemies, bullets)
             gf.update_screen(settings, screen, stats, hero, enemies, bullets)
-            game_frame_counter += 1
         else:
             buttons = menu.show()
-        clock.tick(settings.FPS)
+        clock.tick(settings.innerFPS)
 
 
 run_game()

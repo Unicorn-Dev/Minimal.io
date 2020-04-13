@@ -28,6 +28,8 @@ class Enemy(Sprite):
         self.cx = settings.battle_screen_width - self.radius * 2
         self.cy = float(self.radius)
 
+        self.row = row
+
     def check_edges(self):
         """Возвращает True, если пришелец находится у края экрана."""
         height = self.settings.battle_screen_height
@@ -40,7 +42,7 @@ class Enemy(Sprite):
 
     def update(self):
         self.cx -= self.speed_x
-        self.cy -= self.speed_y * self.direction
+        self.cy += self.speed_y * self.direction
 
     def draw(self):
         """Выводит пришельца в текущем положении."""
