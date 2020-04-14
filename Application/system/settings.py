@@ -44,7 +44,9 @@ class Settings:
 
             # enemy settings
             self.enemy_radius = self.battle_screen_height // 15
+            self.shield_thickness = self.battle_screen_height // 50
             self.enemy_color = (76, 76, 76)
+            self.enemy_shield_color = (50, 50, 50)
             self.enemy_horizontal_speed = 60 / self.innerFPS
             self.enemy_vertical_speed = 450 / self.innerFPS
 

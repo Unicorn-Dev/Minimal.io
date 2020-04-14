@@ -1,11 +1,24 @@
 import pygame.draw as draw
 from pygame.sprite import Sprite
 
+settings = None
+screen = None
+stats = None
+
+
+def set_global_var(setts, scr, statistics):
+    global settings
+    global screen
+    global stats
+    settings = setts
+    screen = scr
+    stats = statistics
+
 
 class Bullet(Sprite):
     """A class to manage powerballs fired from the unicorn"""
 
-    def __init__(self, settings, screen, father, radius=None):
+    def __init__(self, father, radius=None):
         """Create a powerball object at the unicorn's current position."""
         super().__init__()
         self.screen = screen
@@ -38,11 +51,11 @@ class Bullet(Sprite):
 
 
 class FastBullet(Bullet):
-    def __init__(self, settings, screen, father, speed_multiplier=2):
-        Bullet.__init__(self, settings, screen, father)
+    def __init__(self, father, speed_multiplier=2):
+        Bullet.__init__(self, father)
         self.speed = self.speed * speed_multiplier
 
 
 class BigBullet(Bullet):
-    def __init__(self, settings, screen, father, radius_multiplier=3):
-        Bullet.__init__(self, settings, screen, father, settings.bullet_radius * radius_multiplier)
+    def __init__(self, father, radius_multiplier=3):
+        Bullet.__init__(self, father, settings.bullet_radius * radius_multiplier)

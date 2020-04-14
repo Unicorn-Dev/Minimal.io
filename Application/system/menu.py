@@ -1,10 +1,24 @@
 import pygame
 
 
+settings = None
+screen = None
+stats = None
+
+
+def set_global_var(setts, scr, statistics):
+    global settings
+    global screen
+    global stats
+    settings = setts
+    screen = scr
+    stats = statistics
+
+
 class Menu:
     __instance = None
 
-    def __init__(self, settings, screen, stats):
+    def __init__(self):
         if not Menu.__instance:
             self.screen = screen
             self.stats = stats
@@ -37,21 +51,21 @@ class Menu:
             director.set_builder(StartMenuBuilder())
         else:
             director.set_builder(NewGameMenuBuilder())
-        return director.manage(self.screen, self.stats, self)
+        return director.manage(self)
 
 
 class MenuDirector:
     def set_builder(self, builder):
         self.__builder = builder
 
-    def manage(self, screen, stats, menu):
+    def manage(self, menu):
         screen.fill(menu.menu_color)
-        buttons = self.__builder.get_buttons(screen)
+        buttons = self.__builder.get_buttons()
 
         y = self.get_first_y(menu, buttons)
         screen_rect = screen.get_rect()
 
-        menu.draw_text(screen_rect, y, self.__builder.get_text(stats))
+        menu.draw_text(screen_rect, y, self.__builder.get_text())
 
         for button in buttons:
             y += 3 * button.height // 2
@@ -66,49 +80,49 @@ class MenuDirector:
 
 
 class MenuBuilder:
-    def get_text(self, stats):
+    def get_text(self):
         pass
 
-    def get_buttons(self, screen):
+    def get_buttons(self):
         pass
 
 
 class StartMenuBuilder(MenuBuilder):
-    def get_text(self, stats):
+    def get_text(self):
         return """Get ready, Player One!"""
 
-    def get_buttons(self, screen):
+    def get_buttons(self):
         buttons = list()
-        buttons.append(Button(screen, "Play"))
-        buttons.append(Button(screen, "Quit"))
+        buttons.append(Button("Play"))
+        buttons.append(Button("Quit"))
         return buttons
 
 
 class PauseMenuBuilder(MenuBuilder):
-    def get_text(self, stats):
+    def get_text(self):
         return """Game paused."""
 
-    def get_buttons(self, screen):
+    def get_buttons(self):
         buttons = list()
-        buttons.append(Button(screen, "Continue"))
-        buttons.append(Button(screen, "Restart"))
-        buttons.append(Button(screen, "Quit"))
+        buttons.append(Button("Continue"))
+        buttons.append(Button("Restart"))
+        buttons.append(Button("Quit"))
         return buttons
 
 
 class NewGameMenuBuilder(MenuBuilder):
-    def get_text(self, stats):
+    def get_text(self):
         return f"""Your score is {int (stats.last_score)}!"""
 
-    def get_buttons(self, screen):
+    def get_buttons(self):
         buttons = list()
-        buttons.append(Button(screen, "Play"))
-        buttons.append(Button(screen, "Quit"))
+        buttons.append(Button("Play"))
+        buttons.append(Button("Quit"))
         return buttons
 
 
 class Button:
-    def __init__(self, screen, msg):
+    def __init__(self, msg):
         """Инициализирует атрибуты кнопки."""
         self.screen = screen
         self.screen_rect = screen.get_rect()

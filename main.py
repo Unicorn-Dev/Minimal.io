@@ -17,26 +17,28 @@ def run_game():
     pygame.display.set_caption(settings.name)
     clock = pygame.time.Clock()
 
-    menu = Menu(settings, screen, stats)
+    gf.set_global_var(settings, screen, stats)
+
+    menu = Menu()
     buttons = list()
 
     # Make a hero and a group to store bullets in.
-    hero = Hero(settings, screen)
+    hero = Hero()
     bullets = Group()
 
     # Создание флота enemy balls.
     enemies = Group()
-    gf.create_fleet(settings, screen, enemies)
+    gf.create_fleet(enemies)
 
     # Start the main loop for the game.
     while True:
-        gf.check_events(settings, screen, stats, buttons, hero, enemies, bullets)
+        gf.check_events(buttons, hero, enemies, bullets)
         if stats.game_active:
             hero.update()
-            gf.fire_bullet(settings, screen, hero, bullets)
-            gf.update_bullets(settings, screen, stats, bullets, enemies)
-            gf.update_enemies(settings, stats, screen, hero, enemies, bullets)
-            gf.update_screen(settings, screen, stats, hero, enemies, bullets)
+            gf.fire_bullet(hero, bullets)
+            gf.update_bullets(bullets, enemies)
+            gf.update_enemies(hero, enemies, bullets)
+            gf.update_screen(hero, enemies, bullets)
         else:
             buttons = menu.show()
         clock.tick(settings.innerFPS)

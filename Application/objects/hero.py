@@ -1,10 +1,23 @@
 import pygame.draw as draw
 
+settings = None
+screen = None
+stats = None
+
+
+def set_global_var(setts, scr, statistics):
+    global settings
+    global screen
+    global stats
+    settings = setts
+    screen = scr
+    stats = statistics
+
 
 class Hero:
     __instance = None
 
-    def __init__(self, settings, screen):
+    def __init__(self):
         if not Hero.__instance:
             """Initialize the unicorn and set its starting position."""
             self.screen = screen
