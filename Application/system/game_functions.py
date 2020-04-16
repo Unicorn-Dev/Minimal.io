@@ -3,8 +3,6 @@ from time import sleep
 from math import sqrt
 from functools import lru_cache
 import pygame
-from Application.objects.bullet import Bullet
-from Application.objects.bullet import FastBullet
 from Application.objects.enemy import Enemy
 import Application.objects.bullet as bullet_module
 import Application.objects.enemy as enemy_module
@@ -114,14 +112,17 @@ def set_pause(pause):
     pygame.mouse.set_visible(pause)
 
 
-def fire_bullet(hero, bullets, frame=[0]):
+def fire_bullet(hero, bullets, enemies, frame=[0]):
     """"Create an bullet if frame number is big enough."""
     k = settings.innerFPS / settings.BulletPerSecond[hero.bullet_type]
     assert k >= 1
-    if frame[0] >= k and not hero.not_fire:
-        frame[0] -= k
-        bullets.add(settings.bullet_constructors[hero.bullet_type](hero))
-    frame[0] += 1
+    if not hero.not_fire:
+        if frame[0] >= k:
+            frame[0] -= k
+            bullets.add(settings.bullet_constructors[hero.bullet_type](hero))
+        frame[0] += 1
+    for enemy in enemies:
+        enemy.fire_bullet(bullets)
 
 
 def create_fleet(enemies):
@@ -139,8 +140,7 @@ def create_fleet(enemies):
 @lru_cache(maxsize=1)
 def get_number_enemies_in_row():
     """Вычисляет количество пришельцев в ряду."""
-    available_space_y = settings.battle_screen_height - 2 * settings.enemy_radius
-    return available_space_y // (4 * settings.enemy_radius)
+    return 2
 
 
 @lru_cache(maxsize=1)
@@ -151,38 +151,38 @@ def get_number_rows():
     return available_space_x // (3 * settings.enemy_radius)
 
 
-EnemyDirector = enemy_module.EnemyDirector()
-
-
 def create_enemy(enemies, enemy_numbers, row):
     """Создает пришельца и размещает его в ряду."""
     EnemyBuilder = enemy_module.EnemyBuilder()
-    enemy = EnemyDirector.ShieldEnemy(EnemyBuilder, row)
+    enemy =  enemy_module.EnemyDirector.RandomEnemy(EnemyBuilder, row)
     # enemy = Enemy(row)
     enemy.cx = settings.battle_screen_width - settings.enemy_radius * (1 + 3 * row)
     enemy.cy = settings.battle_screen_height / enemy_numbers[1] * enemy_numbers[0]
     enemies.add(enemy)
 
 
-def update_bullets(bullets, enemies):
+def update_bullets(hero, enemies, bullets):
     """Обновляет позиции пуль и уничтожает старые пули."""
     bullets.update()
     # Удаление пуль, вышедших за край экрана.
     for bullet in bullets.copy():
-        if bullet.cx - bullet.radius > settings.battle_screen_width:
+        if bullet.cx < 0 or bullet.cx > settings.battle_screen_width:
             bullets.remove(bullet)
-    check_fire_collisions(enemies, bullets)
+    check_fire_collisions(hero, enemies, bullets)
 
 
-def check_fire_collisions(enemies, bullets):
+def check_fire_collisions(hero, enemies, bullets):
     """Check for every bullet and enemy in sprites if they collision.
     If they collision enemy receive damage"""
-    for collision in collisions_of(bullets, enemies):
-        collision[1].receive_damage(collision[0])
+    for collision in collisions_of(bullets.sprites(), enemies.sprites()):
+        collision[1].receive_damage(bullets, collision[0])
         if collision[1].radius < settings.battle_screen_width / 50:
             stats.last_score += collision[1].reward / settings.battle_screen_width
             enemies.remove(collision[1])
-        bullets.remove(collision[0])
+    for collision in collisions_of(bullets.sprites(), [hero]):
+        hero.receive_damage(bullets, collision[0])
+        if hero.radius < settings.battle_screen_width / 50:
+            hero_die(hero, enemies, bullets)
     if len(enemies) == 0:
         bullets.empty()
         create_fleet(enemies)
@@ -229,8 +229,8 @@ def will_be_collision(enemy1: Enemy, enemy2: Enemy) -> bool:
 
 
 def collisions_of(bullets, enemies):
-    for bullet in bullets.sprites():
-        for enemy in enemies.sprites():
+    for bullet in bullets:
+        for enemy in enemies:
             if is_collision(bullet, enemy):
                 yield bullet, enemy
 
@@ -273,7 +273,10 @@ def enemies_flied(enemies):
 
 
 def hero_die(hero, enemies, bullets):
-    """Обрабатывает столкновение корабля с пришельцем."""
+    """Handle cases when hero collision with enough enemies or hero receive to many damage from enemy bullets."""
+    # reset radius
+    hero.radius = settings.hero_radius
+    hero.life = hero.radius * hero.radius * 3.14
     if stats.lifes_left > 1:
         # Уменьшение ships_left.
         stats.lifes_left -= 1

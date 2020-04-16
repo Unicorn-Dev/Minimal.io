@@ -1,6 +1,8 @@
 import pygame.draw as draw
 from pygame.sprite import Sprite
 
+from Application.objects.hero import Hero
+
 settings = None
 screen = None
 stats = None
@@ -22,7 +24,7 @@ class Bullet(Sprite):
         """Create a powerball object at the unicorn's current position."""
         super().__init__()
         self.screen = screen
-
+        self.father = 'Hero'
         # Create a powerball rect at (0, 0) and then set correct position.
         if radius is None:
             self.radius = settings.bullet_radius
@@ -59,3 +61,11 @@ class FastBullet(Bullet):
 class BigBullet(Bullet):
     def __init__(self, father, radius_multiplier=3):
         Bullet.__init__(self, father, settings.bullet_radius * radius_multiplier)
+
+
+class EnemyBullet(Bullet):
+    def __init__(self, father):
+        Bullet.__init__(self, father)
+        self.father = 'Enemy'
+        self.cx = float(father.cx - father.radius)
+        self.direction = -1

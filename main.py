@@ -35,8 +35,8 @@ def run_game():
         gf.check_events(buttons, hero, enemies, bullets)
         if stats.game_active:
             hero.update()
-            gf.fire_bullet(hero, bullets)
-            gf.update_bullets(bullets, enemies)
+            gf.fire_bullet(hero, bullets, enemies)
+            gf.update_bullets(hero, enemies, bullets)
             gf.update_enemies(hero, enemies, bullets)
             gf.update_screen(hero, enemies, bullets)
         else:

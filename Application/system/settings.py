@@ -26,7 +26,7 @@ class Settings:
             self.lifes_limit = 3
             self.hero_radius = self.battle_screen_height // 12
             self.hero_color = (201, 160, 138)
-            self.hero_speed = 450 / self.innerFPS
+            self.hero_speed = 700 / self.innerFPS
             self.hero_border = self.battle_screen_width // 5
 
             # bullet settings
@@ -34,10 +34,11 @@ class Settings:
             self.bullet_speed = 600 / self.innerFPS
             # for function that create bullets each next bullet_create_frame frame
             # 10 - for Bullet, 13 - for FastBullet
-            self.BulletPerSecond = {"Bullet": 6, "FastBullet": 6, "BigBullet": 4}
+            self.BulletPerSecond = {"Bullet": 6, "EnemyBullet": 1, "FastBullet": 6, "BigBullet": 4}
             # Create an list of copy constructors for bullets
             self.bullet_constructors = {
                 "Bullet": bullet.Bullet,
+                "EnemyBullet": bullet.EnemyBullet,
                 "FastBullet": bullet.FastBullet,
                 "BigBullet": bullet.BigBullet
             }

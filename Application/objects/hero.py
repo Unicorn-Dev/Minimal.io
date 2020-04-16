@@ -1,5 +1,5 @@
 import pygame.draw as draw
-
+import math
 settings = None
 screen = None
 stats = None
@@ -25,6 +25,7 @@ class Hero:
 
             # Load the unicorn's running and flying images and get its' rect.
             self.radius = settings.hero_radius
+            self.life = self.radius * self.radius * 3.14
             self.color = settings.hero_color
             self.speed = settings.hero_speed
             self.border = settings.hero_border
@@ -60,6 +61,21 @@ class Hero:
             self.cx += self.speed
 
     def draw(self):
-        """Draw the unicorn at its current location."""
+        """Draw hero on field."""
         coordinates = (int(self.cx), int(self.cy))
-        draw.circle(self.screen, self.color, coordinates, self.radius)
+        draw.circle(screen, self.color, coordinates, self.radius)
+
+    def receive_damage(self, bullets, bullet):
+        """Control how enemies receive damage from bullets"""
+        if bullet.father == 'Enemy':
+            self.life -= bullet.damage
+            self.set_radiuses()
+            bullets.remove(bullet)
+
+    def set_radiuses(self):
+        """Set enemy shield and body radiuses (uses after bullet smashed enemy)"""
+        if self.life > 0:
+            self.radius = int(math.sqrt(self.life / 3.14))
+        else:
+            self.radius = 0
+
