@@ -18,8 +18,9 @@ class Settings:
             self.app_screen_dimensions = (self.app_screen_width, self.app_screen_height)
             self.bg_color = (242, 235, 227)
             self.name = "Minimal.io"
+            self.favicon = "Application/images/favicon.png"
             # user for update screen, inner for inner calculations
-            self.userFPS = 30
+            self.userFPS = 60
             self.innerFPS = 200
 
             # hero settings

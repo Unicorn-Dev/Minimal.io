@@ -21,7 +21,6 @@ class Bullet(Sprite):
     def __init__(self, father, radius=None):
         """Create a powerball object at the unicorn's current position."""
         super().__init__()
-        self.screen = screen
 
         # Create a powerball rect at (0, 0) and then set correct position.
         if radius is None:
@@ -47,7 +46,7 @@ class Bullet(Sprite):
     def draw(self):
         """Draw the powerball to the screen."""
         coordinates = (int(self.cx), int(self.cy))
-        draw.circle(self.screen, self.color, coordinates, self.radius)
+        draw.circle(screen, self.color, coordinates, self.radius)
 
 
 class FastBullet(Bullet):

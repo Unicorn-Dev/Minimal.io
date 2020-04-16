@@ -18,9 +18,7 @@ class Hero:
     __instance = None
 
     def __init__(self):
-        if not Hero.__instance:
             """Initialize the unicorn and set its starting position."""
-            self.screen = screen
             self.screen_rect = screen.get_rect()
 
             # Load the unicorn's running and flying images and get its' rect.
@@ -32,6 +30,9 @@ class Hero:
             # Start each new unicorn at the left center of the screen.
             self.move_to_default_position()
 
+            self.health = settings.lifes_limit
+            self.alive = True
+
             # Movement flags
             self.moving_up = False
             self.moving_down = False
@@ -41,9 +42,6 @@ class Hero:
             self.bullet_type = "Bullet"
             # to make app check easier and for hard players)
             self.not_fire = False
-            Hero.__instance = self
-        else:
-            raise Exception("Hero is a singleton!")
 
     def move_to_default_position(self):
         self.cx = float(self.radius)  # x coordinate of center
@@ -62,4 +60,4 @@ class Hero:
     def draw(self):
         """Draw the unicorn at its current location."""
         coordinates = (int(self.cx), int(self.cy))
-        draw.circle(self.screen, self.color, coordinates, self.radius)
+        draw.circle(screen, self.color, coordinates, self.radius)

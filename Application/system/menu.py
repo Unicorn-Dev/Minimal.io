@@ -20,8 +20,6 @@ class Menu:
 
     def __init__(self):
         if not Menu.__instance:
-            self.screen = screen
-            self.stats = stats
             self.height = settings.battle_screen_height
             self.menu_color = settings.bg_color
             self.text_color = (94, 82, 86)
@@ -36,7 +34,7 @@ class Menu:
         text_image_rect = text_image.get_rect()
         text_image_rect.centerx = screen_rect.centerx
         text_image_rect.y = y
-        self.screen.blit(text_image, text_image_rect)
+        screen.blit(text_image, text_image_rect)
 
     def draw_button(self, button, y):
         button.set_y(y)
@@ -45,9 +43,11 @@ class Menu:
 
     def show(self):
         director = MenuDirector()
-        if self.stats.pause:
+        if stats.choosing_game_type:
+            director.set_builder(ChoosingGameTypeMenuBuilder())
+        elif stats.pause:
             director.set_builder(PauseMenuBuilder())
-        elif self.stats.first_game:
+        elif stats.first_game:
             director.set_builder(StartMenuBuilder())
         else:
             director.set_builder(NewGameMenuBuilder())
@@ -121,10 +121,21 @@ class NewGameMenuBuilder(MenuBuilder):
         return buttons
 
 
+class ChoosingGameTypeMenuBuilder(MenuBuilder):
+    def get_text(self):
+        return """Choose game mode"""
+
+    def get_buttons(self):
+        buttons = list()
+        buttons.append(Button("One player"))
+        buttons.append(Button("Two players"))
+        buttons.append(Button("Back"))
+        return buttons
+
+
 class Button:
     def __init__(self, msg):
         """Инициализирует атрибуты кнопки."""
-        self.screen = screen
         self.screen_rect = screen.get_rect()
 
         # Назначение размеров и свойств кнопок.
@@ -152,5 +163,5 @@ class Button:
 
     def draw(self):
         # Отображение пустой кнопки и вывод сообщения.
-        self.screen.fill(self.button_color, self.rect)
-        self.screen.blit(self.msg_image, self.msg_image_rect)
+        screen.fill(self.button_color, self.rect)
+        screen.blit(self.msg_image, self.msg_image_rect)
