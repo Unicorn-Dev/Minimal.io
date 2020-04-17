@@ -15,7 +15,7 @@ class Statistics:
             self.first_game = True
             self.single_player = True
             self.choosing_game_type = False
-
+            self.last_score = 0
             self.reset_stats()
 
             Statistics.__instance = self

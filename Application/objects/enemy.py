@@ -199,12 +199,13 @@ class Enemy(Sprite):
     def receive_damage(self, bullets, bullet):
         """Control how enemies receive damage from bullets"""
         if bullet.father == 'Hero':
+            damage = bullet.damage / ((not stats.single_player) + 1)
             if self.shield_life > 0:
-                self.shield_life -= bullet.damage
+                self.shield_life -= damage
                 if self.shield_life <= 0:
                     self.life += self.shield_life
                     self.shield_life = 0
             else:
-                self.life -= bullet.damage
+                self.life -= damage
             self.set_radiuses()
             bullets.remove(bullet)
