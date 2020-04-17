@@ -3,6 +3,12 @@ from time import sleep
 from math import sqrt
 from functools import lru_cache
 import pygame
+<<<<<<< HEAD
+=======
+from Application.objects.hero import Hero
+from Application.objects.bullet import Bullet
+from Application.objects.bullet import FastBullet
+>>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
 from Application.objects.enemy import Enemy
 import Application.objects.bullet as bullet_module
 import Application.objects.enemy as enemy_module
@@ -15,7 +21,7 @@ screen = None
 stats = None
 
 
-def set_global_var(setts, scr, statistics):
+def set_global_var(setts, scr, statistics) -> None:
     global settings
     global screen
     global stats
@@ -28,94 +34,135 @@ def set_global_var(setts, scr, statistics):
     menu_module.set_global_var(setts, scr, statistics)
 
 
-def check_events(buttons, hero, enemies, bullets):
+def check_events(buttons, heroes, enemies, bullets) -> None:
     """Respond to key presses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_key_down_events(event, hero, enemies, bullets)
+            check_key_down_events(event, heroes)
         elif event.type == pygame.KEYUP:
-            check_key_up_events(event, hero)
+            check_key_up_events(event, heroes)
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            check_menu_buttons(buttons, hero, enemies, bullets)
+            check_menu_buttons(buttons, heroes, enemies, bullets)
 
 
-def check_key_down_events(event, hero, enemies, bullets):
+def check_key_down_events(event, heroes) -> None:
     """Respond to key presses."""
     if event.key == pygame.K_q:
         sys.exit()
     elif event.key == pygame.K_p and not stats.game_active:
-        start_game(hero, enemies, bullets)
+        stats.choosing_game_type = True
     elif event.key == pygame.K_ESCAPE and stats.game_active != stats.pause:
-        set_pause(stats, not stats.pause)
+        set_pause(not stats.pause)
+    elif event.key == pygame.K_ESCAPE and stats.choosing_game_type:
+        stats.choosing_game_type = False
     elif stats.game_active:
         # for test, remove in future
         # you can change bullets type if press f (for fast), b (for big) or n (for normal)
-        if event.key == pygame.K_n:
-            hero.bullet_type = "Bullet"
-        if event.key == pygame.K_f:
-            hero.bullet_type = "FastBullet"
-        if event.key == pygame.K_b:
-            hero.bullet_type = "BigBullet"
-        #
-        if event.key == pygame.K_EQUALS:
-            hero.not_fire = not hero.not_fire
+        for hero in heroes:
+            if event.key == pygame.K_n:
+                hero.bullet_type = "Bullet"
+            if event.key == pygame.K_f:
+                hero.bullet_type = "FastBullet"
+            if event.key == pygame.K_b:
+                hero.bullet_type = "BigBullet"
+            if event.key == pygame.K_EQUALS:
+                hero.not_fire = not hero.not_fire
         if event.key == pygame.K_UP:
-            hero.moving_up = True
+            heroes[0].moving_up = True
         elif event.key == pygame.K_DOWN:
-            hero.moving_down = True
+            heroes[0].moving_down = True
         elif event.key == pygame.K_LEFT:
-            hero.moving_left = True
+            heroes[0].moving_left = True
         elif event.key == pygame.K_RIGHT:
-            hero.moving_right = True
+            heroes[0].moving_right = True
+
+        if not stats.single_player:
+            if event.key == pygame.K_w:
+                heroes[1].moving_up = True
+            elif event.key == pygame.K_s:
+                heroes[1].moving_down = True
+            elif event.key == pygame.K_a:
+                heroes[1].moving_left = True
+            elif event.key == pygame.K_d:
+                heroes[1].moving_right = True
 
 
-def check_key_up_events(event, hero):
+def check_key_up_events(event, heroes) -> None:
     """Respond to key unpresses."""
     if event.key == pygame.K_UP:
-        hero.moving_up = False
+        heroes[0].moving_up = False
     elif event.key == pygame.K_DOWN:
-        hero.moving_down = False
+        heroes[0].moving_down = False
     elif event.key == pygame.K_LEFT:
-        hero.moving_left = False
+        heroes[0].moving_left = False
     elif event.key == pygame.K_RIGHT:
-        hero.moving_right = False
+        heroes[0].moving_right = False
+
+    if not stats.single_player:
+        if event.key == pygame.K_w:
+            heroes[1].moving_up = False
+        elif event.key == pygame.K_s:
+            heroes[1].moving_down = False
+        elif event.key == pygame.K_a:
+            heroes[1].moving_left = False
+        elif event.key == pygame.K_d:
+            heroes[1].moving_right = False
 
 
-def check_menu_buttons(buttons, hero, enemies, bullets):
+def check_menu_buttons(buttons, heroes, enemies, bullets) -> None:
     """Запускает новую игру при нажатии кнопки Play."""
     if not stats.game_active:
         for button in buttons:
             button_clicked = button.rect.collidepoint(pygame.mouse.get_pos())
             if button_clicked:
                 if button.text == 'Continue':
-                    set_pause(stats, False)
+                    set_pause(False)
                 elif button.text == 'Play' or button.text == 'Restart':
-                    start_game(hero, enemies, bullets)
+                    stats.choosing_game_type = True
+                elif button.text == 'One player':
+                    stats.single_player = True
+                    heroes.clear()
+                    heroes.append(Hero())
+                    start_game(heroes, enemies, bullets)
+                elif button.text == 'Two players':
+                    stats.single_player = False
+                    heroes.clear()
+                    heroes.append(Hero())
+                    heroes.append(Hero())
+                    start_game(heroes, enemies, bullets)
+                elif button.text == 'Back':
+                    stats.choosing_game_type = False
                 elif button.text == 'Quit':
                     sys.exit()
                 break
 
 
-def start_game(hero, enemies, bullets):
-    prepare_field(hero, enemies, bullets)
+def start_game(heroes, enemies, bullets) -> None:
+    prepare_field(heroes, enemies, bullets)
     stats.reset_stats()
     pygame.mouse.set_visible(False)
     stats.game_active = True
     stats.pause = False
+    stats.choosing_game_type = False
 
 
-def set_pause(pause):
+def set_pause(pause) -> None:
     stats.pause = pause
     stats.game_active = not pause
     pygame.mouse.set_visible(pause)
 
 
+<<<<<<< HEAD
 def fire_bullet(hero, bullets, enemies, frame=[0]):
+=======
+def fire_bullet(heroes, bullets, frame=[0]) -> None:
+>>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
     """"Create an bullet if frame number is big enough."""
-    k = settings.innerFPS / settings.BulletPerSecond[hero.bullet_type]
+    k = settings.innerFPS / settings.BulletPerSecond[heroes[0].bullet_type]
     assert k >= 1
+<<<<<<< HEAD
     if not hero.not_fire:
         if frame[0] >= k:
             frame[0] -= k
@@ -123,9 +170,19 @@ def fire_bullet(hero, bullets, enemies, frame=[0]):
         frame[0] += 1
     for enemy in enemies:
         enemy.fire_bullet(bullets)
+=======
+    shoot = False
+    for hero in heroes:
+        if hero.alive and frame[0] >= k and not hero.not_fire:
+            shoot = True
+            bullets.add(settings.bullet_constructors[hero.bullet_type](hero))
+    if shoot:
+        frame[0] -= k
+    frame[0] += 1
+>>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
 
 
-def create_fleet(enemies):
+def create_fleet(enemies) -> None:
     """Создает флот пришельцев."""
     # Создание пришельца и вычисление количества пришельцев в ряду.
     # Интервал между соседними пришельцами равен одной ширине пришельца.
@@ -151,7 +208,14 @@ def get_number_rows():
     return available_space_x // (3 * settings.enemy_radius)
 
 
+<<<<<<< HEAD
 def create_enemy(enemies, enemy_numbers, row):
+=======
+EnemyDirector = enemy_module.EnemyDirector()
+
+
+def create_enemy(enemies, enemy_numbers, row) -> None:
+>>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
     """Создает пришельца и размещает его в ряду."""
     EnemyBuilder = enemy_module.EnemyBuilder()
     enemy =  enemy_module.EnemyDirector.RandomEnemy(EnemyBuilder, row)
@@ -161,7 +225,11 @@ def create_enemy(enemies, enemy_numbers, row):
     enemies.add(enemy)
 
 
+<<<<<<< HEAD
 def update_bullets(hero, enemies, bullets):
+=======
+def update_bullets(bullets, enemies) -> None:
+>>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
     """Обновляет позиции пуль и уничтожает старые пули."""
     bullets.update()
     # Удаление пуль, вышедших за край экрана.
@@ -171,7 +239,11 @@ def update_bullets(hero, enemies, bullets):
     check_fire_collisions(hero, enemies, bullets)
 
 
+<<<<<<< HEAD
 def check_fire_collisions(hero, enemies, bullets):
+=======
+def check_fire_collisions(enemies, bullets) -> None:
+>>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
     """Check for every bullet and enemy in sprites if they collision.
     If they collision enemy receive damage"""
     for collision in collisions_of(bullets.sprites(), enemies.sprites()):
@@ -242,21 +314,31 @@ def collisions_of_enemies(enemies: pygame.sprite.Group):
                 yield enemies.sprites()[i], enemies.sprites()[j]
 
 
-def update_enemies(hero, enemies, bullets):
+def update_enemies(heroes, enemies, bullets) -> None:
     enemies.update()
     for enemy in enemies:
         enemy.check_edges()
     check_enemy_collisions(enemies)
-    if enemy_took_hero(hero, enemies) or enemies_flied(enemies):
-        hero_die(hero, enemies, bullets)
+    if enemies_flied(enemies):
+        for hero in heroes:
+            hero_die(hero)
+    for hero in heroes:
+        if hero.alive and enemy_took_hero(hero, enemies):
+            hero_die(hero)
+    if everybody_absolutely_dead(heroes):
+        stats.game_active = False
+        stats.first_game = False
+        pygame.mouse.set_visible(True)
+    elif everybody_dead(heroes):
+        prepare_field(heroes, enemies, bullets)
 
 
-def is_collision(object1, object2):
+def is_collision(object1, object2) -> bool:
     distance = sqrt((object1.cx - object2.cx)**2 + (object1.cy - object2.cy)**2)
     return distance <= object1.radius + object2.radius
 
 
-def enemy_took_hero(hero, enemies):
+def enemy_took_hero(hero, enemies) -> bool:
     """Сhecks whether one of the enemies was able to touch the hero."""
     for enemy in enemies:
         if is_collision(hero, enemy):
@@ -264,7 +346,7 @@ def enemy_took_hero(hero, enemies):
     return False
 
 
-def enemies_flied(enemies):
+def enemies_flied(enemies) -> bool:
     """Проверяет, добрались ли enemy balls до нижнего края экрана."""
     for enemy in enemies.sprites():
         if enemy.cx <= enemy.radius:
@@ -278,6 +360,8 @@ def hero_die(hero, enemies, bullets):
     hero.radius = settings.hero_radius
     hero.life = hero.radius * hero.radius * 3.14
     if stats.lifes_left > 1:
+    hero.health -= 1
+    hero.alive = False
         # Уменьшение ships_left.
         stats.lifes_left -= 1
         prepare_field(hero, enemies, bullets)
@@ -288,24 +372,45 @@ def hero_die(hero, enemies, bullets):
         stats.first_game = False
         pygame.mouse.set_visible(True)
 
+def update_heroes(heroes) -> None:
+    for hero in heroes:
+        hero.update()
 
-def prepare_field(hero, enemies, bullets):
+def everybody_dead(heroes) -> bool:
+    for hero in heroes:
+        if hero.alive:
+            return False
+    return True
+
+def everybody_absolutely_dead(heroes) -> bool:
+    for hero in heroes:
+        if hero.health > 0:
+            return False
+    return True
+
+
+def prepare_field(heroes, enemies, bullets) -> None:
     # Очистка списков пришельцев и пуль.
     enemies.empty()
     bullets.empty()
+
     # Создание нового флота и размещение корабля в центре.
     create_fleet(enemies)
-    hero.move_to_default_position()
+    for hero in heroes:
+        hero.move_to_default_position()
+        hero.alive = True
 
 
-def update_screen(hero, enemies, bullets, frame_numb=[0]):
+def update_screen(heroes, enemies, bullets, frame_numb=[0]) -> None:
     """Update images on the screen and flip to the new screen."""
     k = settings.innerFPS / settings.userFPS
     assert k >= 1
     if frame_numb[0] >= k:
         frame_numb[0] -= k - 1
         screen.fill(settings.bg_color)
-        hero.draw()  # Redraw hero.
+        for hero in heroes:
+            if hero.alive:
+                hero.draw()
         for bullet in bullets:
             bullet.draw()
         for enemy in enemies:
