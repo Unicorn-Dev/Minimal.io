@@ -20,7 +20,7 @@ class Settings:
             self.name = "Minimal.io"
             self.favicon = "Application/images/favicon.png"
             # user for update screen, inner for inner calculations
-            self.userFPS = 60
+            self.userFPS = 30
             self.innerFPS = 200
 
             # hero settings
@@ -35,7 +35,7 @@ class Settings:
             self.bullet_speed = 600 / self.innerFPS
             # for function that create bullets each next bullet_create_frame frame
             # 10 - for Bullet, 13 - for FastBullet
-            self.BulletPerSecond = {"Bullet": 6, "EnemyBullet": 1, "FastBullet": 6, "BigBullet": 4}
+            self.BulletPerSecond = {"Bullet": 6, "EnemyBullet": 2, "FastBullet": 6, "BigBullet": 4}
             # Create an list of copy constructors for bullets
             self.bullet_constructors = {
                 "Bullet": bullet.Bullet,

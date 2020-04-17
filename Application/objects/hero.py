@@ -1,5 +1,7 @@
+import random
 import pygame.draw as draw
 import math
+
 settings = None
 screen = None
 stats = None
@@ -18,31 +20,35 @@ class Hero:
     __instance = None
 
     def __init__(self):
-            """Initialize the unicorn and set its starting position."""
-            self.screen_rect = screen.get_rect()
+        """Initialize the unicorn and set its starting position."""
 
-            # Load the unicorn's running and flying images and get its' rect.
-            self.radius = settings.hero_radius
-            self.life = self.radius * self.radius * 3.14
-            self.color = settings.hero_color
-            self.speed = settings.hero_speed
-            self.border = settings.hero_border
+        self.screen_rect = screen.get_rect()
 
-            # Start each new unicorn at the left center of the screen.
-            self.move_to_default_position()
+        # Load the unicorn's running and flying images and get its' rect.
+        self.radius = settings.hero_radius
+        self.life = self.radius * self.radius * 3.14
+        self.color = settings.hero_color
+        self.speed = settings.hero_speed
+        self.border = settings.hero_border
 
-            self.health = settings.lifes_limit
-            self.alive = True
+        # Start each new unicorn at the left center of the screen.
+        self.cx = 0
+        self.cy = 0
+        self.move_to_default_position()
 
-            # Movement flags
-            self.moving_up = False
-            self.moving_down = False
-            self.moving_left = False
-            self.moving_right = False
-            # type of his bullets, name the same ass bullet class name
-            self.bullet_type = "Bullet"
-            # to make app check easier and for hard players)
-            self.not_fire = False
+        self.remaining_lives = settings.lifes_limit
+        self.alive = True
+
+        # Movement flags
+        self.moving_up = False
+        self.moving_down = False
+        self.moving_left = False
+        self.moving_right = False
+        # type of his bullets, name the same ass bullet class name
+        self.bullet_type = "Bullet"
+        self.shoot_freq = settings.innerFPS / settings.BulletPerSecond[self.bullet_type]
+        self.shoot_frame_cnt = random.randint(0, 100) % self.shoot_freq
+        # to make app check easier and for hard players)
 
     def move_to_default_position(self):
         self.cx = float(self.radius)  # x coordinate of center
@@ -77,3 +83,16 @@ class Hero:
         else:
             self.radius = 0
 
+    def fire_bullet(self, bullets):
+        """"Create an bullet if frame number is big enough."""
+        if self.bullet_type is not None and self.alive:
+            assert self.shoot_freq >= 1
+            if self.shoot_frame_cnt >= self.shoot_freq:
+                self.shoot_frame_cnt -= self.shoot_freq
+                bullets.add(settings.bullet_constructors[self.bullet_type](self))
+            self.shoot_frame_cnt += 1
+
+    def change_bullets(self, bullet_type: str) -> None:
+        self.bullet_type = bullet_type
+        self.shoot_freq = settings.innerFPS / settings.BulletPerSecond[self.bullet_type]
+        self.shoot_frame_cnt = random.randint(0, 100) % self.shoot_freq

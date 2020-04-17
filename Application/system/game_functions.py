@@ -3,12 +3,7 @@ from time import sleep
 from math import sqrt
 from functools import lru_cache
 import pygame
-<<<<<<< HEAD
-=======
 from Application.objects.hero import Hero
-from Application.objects.bullet import Bullet
-from Application.objects.bullet import FastBullet
->>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
 from Application.objects.enemy import Enemy
 import Application.objects.bullet as bullet_module
 import Application.objects.enemy as enemy_module
@@ -62,13 +57,13 @@ def check_key_down_events(event, heroes) -> None:
         # you can change bullets type if press f (for fast), b (for big) or n (for normal)
         for hero in heroes:
             if event.key == pygame.K_n:
-                hero.bullet_type = "Bullet"
+                hero.change_bullets("Bullet")
             if event.key == pygame.K_f:
-                hero.bullet_type = "FastBullet"
+                hero.change_bullets("FastBullet")
             if event.key == pygame.K_b:
-                hero.bullet_type = "BigBullet"
+                hero.change_bullets("BigBullet")
             if event.key == pygame.K_EQUALS:
-                hero.not_fire = not hero.not_fire
+                hero.bullet_type = None
         if event.key == pygame.K_UP:
             heroes[0].moving_up = True
         elif event.key == pygame.K_DOWN:
@@ -154,32 +149,12 @@ def set_pause(pause) -> None:
     pygame.mouse.set_visible(pause)
 
 
-<<<<<<< HEAD
-def fire_bullet(hero, bullets, enemies, frame=[0]):
-=======
-def fire_bullet(heroes, bullets, frame=[0]) -> None:
->>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
+def fire_bullets(heroes, bullets, enemies) -> None:
     """"Create an bullet if frame number is big enough."""
-    k = settings.innerFPS / settings.BulletPerSecond[heroes[0].bullet_type]
-    assert k >= 1
-<<<<<<< HEAD
-    if not hero.not_fire:
-        if frame[0] >= k:
-            frame[0] -= k
-            bullets.add(settings.bullet_constructors[hero.bullet_type](hero))
-        frame[0] += 1
+    for hero in heroes:
+        hero.fire_bullet(bullets)
     for enemy in enemies:
         enemy.fire_bullet(bullets)
-=======
-    shoot = False
-    for hero in heroes:
-        if hero.alive and frame[0] >= k and not hero.not_fire:
-            shoot = True
-            bullets.add(settings.bullet_constructors[hero.bullet_type](hero))
-    if shoot:
-        frame[0] -= k
-    frame[0] += 1
->>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
 
 
 def create_fleet(enemies) -> None:
@@ -208,14 +183,10 @@ def get_number_rows():
     return available_space_x // (3 * settings.enemy_radius)
 
 
-<<<<<<< HEAD
-def create_enemy(enemies, enemy_numbers, row):
-=======
 EnemyDirector = enemy_module.EnemyDirector()
 
 
 def create_enemy(enemies, enemy_numbers, row) -> None:
->>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
     """Создает пришельца и размещает его в ряду."""
     EnemyBuilder = enemy_module.EnemyBuilder()
     enemy =  enemy_module.EnemyDirector.RandomEnemy(EnemyBuilder, row)
@@ -225,25 +196,18 @@ def create_enemy(enemies, enemy_numbers, row) -> None:
     enemies.add(enemy)
 
 
-<<<<<<< HEAD
-def update_bullets(hero, enemies, bullets):
-=======
-def update_bullets(bullets, enemies) -> None:
->>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
+def update_bullets(heroes: list, enemies, bullets) -> None:
     """Обновляет позиции пуль и уничтожает старые пули."""
     bullets.update()
     # Удаление пуль, вышедших за край экрана.
     for bullet in bullets.copy():
         if bullet.cx < 0 or bullet.cx > settings.battle_screen_width:
             bullets.remove(bullet)
-    check_fire_collisions(hero, enemies, bullets)
+    for hero in heroes:
+        check_fire_collisions(hero, enemies, bullets)
 
 
-<<<<<<< HEAD
-def check_fire_collisions(hero, enemies, bullets):
-=======
-def check_fire_collisions(enemies, bullets) -> None:
->>>>>>> 4d17f197b77e628568939773a1efd8f4d77e14e9
+def check_fire_collisions(hero, enemies, bullets) -> None:
     """Check for every bullet and enemy in sprites if they collision.
     If they collision enemy receive damage"""
     for collision in collisions_of(bullets.sprites(), enemies.sprites()):
@@ -254,7 +218,7 @@ def check_fire_collisions(enemies, bullets) -> None:
     for collision in collisions_of(bullets.sprites(), [hero]):
         hero.receive_damage(bullets, collision[0])
         if hero.radius < settings.battle_screen_width / 50:
-            hero_die(hero, enemies, bullets)
+            hero_die(hero)
     if len(enemies) == 0:
         bullets.empty()
         create_fleet(enemies)
@@ -354,27 +318,22 @@ def enemies_flied(enemies) -> bool:
     return False
 
 
-def hero_die(hero, enemies, bullets):
+def hero_die(hero):
     """Handle cases when hero collision with enough enemies or hero receive to many damage from enemy bullets."""
     # reset radius
     hero.radius = settings.hero_radius
     hero.life = hero.radius * hero.radius * 3.14
-    if stats.lifes_left > 1:
-    hero.health -= 1
+    # Уменьшение ships_left.
+    hero.remaining_lives -= 1
     hero.alive = False
-        # Уменьшение ships_left.
-        stats.lifes_left -= 1
-        prepare_field(hero, enemies, bullets)
-        # Пауза.
-        sleep(1)
-    else:
-        stats.game_active = False
-        stats.first_game = False
-        pygame.mouse.set_visible(True)
+    # Пауза.
+    sleep(1)
+
 
 def update_heroes(heroes) -> None:
     for hero in heroes:
         hero.update()
+
 
 def everybody_dead(heroes) -> bool:
     for hero in heroes:
@@ -382,9 +341,10 @@ def everybody_dead(heroes) -> bool:
             return False
     return True
 
+
 def everybody_absolutely_dead(heroes) -> bool:
     for hero in heroes:
-        if hero.health > 0:
+        if hero.remaining_lives > 0:
             return False
     return True
 
