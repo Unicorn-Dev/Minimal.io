@@ -29,7 +29,7 @@ $ python main.py
 
 $ python3 main.py  
 
+## Правила игры можно найти [здесь](https://github.com/Unicorn-Dev/Minimal.io/blob/new_ver_dev/HELP.md).
+
 ## Обратная связь
 Все пожелания и замечания можно писать в телеграме @AlexFreik, @cosdar.
-
-## Правила игры можно найти [здесь](https://github.com/Unicorn-Dev/Minimal.io/blob/new_ver_dev/HELP.md).
