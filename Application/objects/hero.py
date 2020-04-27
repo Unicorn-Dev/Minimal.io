@@ -36,7 +36,7 @@ class Hero:
         self.cy = 0
         self.move_to_default_position()
 
-        self.remaining_lives = settings.lifes_limit
+        self.remaining_lives = settings.lives_limit
         self.alive = True
 
         # Movement flags

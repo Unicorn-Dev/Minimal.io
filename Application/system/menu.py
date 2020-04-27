@@ -22,8 +22,8 @@ class Menu:
         if not Menu.__instance:
             self.height = settings.battle_screen_height
             self.menu_color = settings.bg_color
-            self.text_color = (94, 82, 86)
-            self.font = pygame.font.SysFont(None, 64)
+            self.text_color = settings.menu_text_color
+            self.font = settings.menu_font
 
             Menu.__instance = self
         else:
@@ -35,11 +35,6 @@ class Menu:
         text_image_rect.centerx = screen_rect.centerx
         text_image_rect.y = y
         screen.blit(text_image, text_image_rect)
-
-    def draw_button(self, button, y):
-        button.set_y(y)
-        button.set_msg(button.text)
-        button.draw()
 
     def show(self):
         director = MenuDirector()
@@ -66,10 +61,12 @@ class MenuDirector:
         screen_rect = screen.get_rect()
 
         menu.draw_text(screen_rect, y, self.__builder.get_text())
+        y += settings.menu_font_height + buttons[0].height // 2
 
         for button in buttons:
+            button.set_y(y)
+            button.draw()
             y += 3 * button.height // 2
-            menu.draw_button(button, y)
 
         pygame.display.flip()
 
@@ -100,7 +97,7 @@ class StartMenuBuilder(MenuBuilder):
 
 class PauseMenuBuilder(MenuBuilder):
     def get_text(self):
-        return """Game paused."""
+        return """Game paused"""
 
     def get_buttons(self):
         buttons = list()
@@ -134,32 +131,32 @@ class ChoosingGameTypeMenuBuilder(MenuBuilder):
 
 
 class Button:
-    def __init__(self, msg):
+    def __init__(self, text):
         """Инициализирует атрибуты кнопки."""
         self.screen_rect = screen.get_rect()
 
         # Назначение размеров и свойств кнопок.
-        self.width, self.height = 200, 50
-        self.button_color = (214, 168, 142)
-        self.text_color = (255, 255, 255)
-        self.font = pygame.font.SysFont(None, 48)
+        self.button_color = settings.button_color
+        self.text_color = settings.button_text_color
+        self.font = settings.button_font
+
+        # Сообщение кнопки создается только один раз.
+        self.text = text
+        self.msg_image = self.font.render(self.text, True, self.text_color,
+                                          self.button_color)
+        self.msg_image_rect = self.msg_image.get_rect()
+        self.msg_image_rect.center = self.screen_rect.center
+
+        self.width = max(self.msg_image_rect.width * 1.3, settings.screen_width // 4)
+        self.height = max(self.msg_image_rect.height * 1.4, settings.screen_height // 10)
 
         # Построение объекта rect кнопки и выравнивание по центру экрана.
         self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.rect.center = self.screen_rect.center
 
-        # Сообщение кнопки создается только один раз.
-        self.text = msg
-
-    def set_msg(self, msg):
-        """Преобразует msg в прямоугольник и выравнивает текст по центру."""
-        self.msg_image = self.font.render(msg, True, self.text_color,
-                                            self.button_color)
-        self.msg_image_rect = self.msg_image.get_rect()
-        self.msg_image_rect.center = self.rect.center
-
     def set_y(self, y):
         self.rect.y = y
+        self.msg_image_rect.center = self.rect.center
 
     def draw(self):
         # Отображение пустой кнопки и вывод сообщения.

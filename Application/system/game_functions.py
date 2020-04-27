@@ -1,7 +1,6 @@
 import sys
 from time import sleep
 from math import sqrt
-from functools import lru_cache
 import pygame
 from Application.objects.hero import Hero
 from Application.objects.enemy import Enemy
@@ -27,6 +26,14 @@ def set_global_var(setts, scr, statistics) -> None:
     enemy_module.set_global_var(setts, scr, statistics)
     hero_module.set_global_var(setts, scr, statistics)
     menu_module.set_global_var(setts, scr, statistics)
+
+
+def static_vars(**kwargs):
+    def wrapper(function):
+        for key in kwargs:
+            setattr(function, key, kwargs[key])
+        return function
+    return wrapper
 
 
 def check_events(buttons, heroes, enemies, bullets) -> None:
@@ -161,36 +168,19 @@ def create_fleet(enemies) -> None:
     """Создает флот пришельцев."""
     # Создание пришельца и вычисление количества пришельцев в ряду.
     # Интервал между соседними пришельцами равен одной ширине пришельца.
-    number_enemies_row = get_number_enemies_in_row()
-    number_rows = get_number_rows()
+    number_enemies_row = settings.number_enemies_in_row
+    number_rows = settings.number_rows_of_enemies
     # Создание первого ряда пришельцев.
     for row in range(number_rows):
         for enemy_number in range(number_enemies_row):
             create_enemy(enemies, (enemy_number, number_enemies_row), row)
 
 
-@lru_cache(maxsize=1)
-def get_number_enemies_in_row():
-    """Вычисляет количество пришельцев в ряду."""
-    return 2
-
-
-@lru_cache(maxsize=1)
-def get_number_rows():
-    """Определяет количество рядов, помещающихся на экране."""
-    available_space_x = (settings.battle_screen_width -
-                         6 * settings.enemy_radius - settings.hero_border)
-    return available_space_x // (3 * settings.enemy_radius)
-
-
-EnemyDirector = enemy_module.EnemyDirector()
-
-
 def create_enemy(enemies, enemy_numbers, row) -> None:
     """Создает пришельца и размещает его в ряду."""
-    EnemyBuilder = enemy_module.EnemyBuilder()
-    enemy =  enemy_module.EnemyDirector.RandomEnemy(EnemyBuilder, row)
-    # enemy = Enemy(row)
+    enemy_director = enemy_module.EnemyDirector()
+    enemy_builder = enemy_module.EnemyBuilder()
+    enemy = enemy_director.RandomEnemy(enemy_builder, row)
     enemy.cx = settings.battle_screen_width - settings.enemy_radius * (1 + 3 * row)
     enemy.cy = settings.battle_screen_height / enemy_numbers[1] * enemy_numbers[0]
     enemies.add(enemy)
@@ -361,12 +351,13 @@ def prepare_field(heroes, enemies, bullets) -> None:
         hero.alive = True
 
 
-def update_screen(heroes, enemies, bullets, frame_numb=[0]) -> None:
+@static_vars(frame_numb=0)
+def update_screen(heroes, enemies, bullets) -> None:
     """Update images on the screen and flip to the new screen."""
     k = settings.innerFPS / settings.userFPS
     assert k >= 1
-    if frame_numb[0] >= k:
-        frame_numb[0] -= k - 1
+    if update_screen.frame_numb >= k:
+        update_screen.frame_numb -= k - 1
         screen.fill(settings.bg_color)
         for hero in heroes:
             if hero.alive:
@@ -376,4 +367,4 @@ def update_screen(heroes, enemies, bullets, frame_numb=[0]) -> None:
         for enemy in enemies:
             enemy.draw()
         pygame.display.flip()
-    frame_numb[0] += 1
+    update_screen.frame_numb += 1
