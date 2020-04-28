@@ -37,7 +37,7 @@ class Settings:
             # 10 - for Bullet, 13 - for FastBullet
             self.BulletPerSecond = {
                 "Bullet": 6,
-                "EnemyBullet": 2,
+                "EnemyBullet": 1,
                 "FastBullet": 6,
                 "BigBullet": 4
             }
@@ -67,6 +67,11 @@ class Settings:
             self.button_text_color = (255, 255, 255)
             self.button_font_height = 40
             self.button_font = font.Font('Application/static/Delvon.ttf', self.button_font_height)
+
+            # battlefield screen settings
+            self.score_text_color = (94, 82, 86)
+            self.score_font_height = 60
+            self.score_font = font.Font('Application/static/Evogria.otf', self.score_font_height)
 
             Settings.__instance = self
         else:

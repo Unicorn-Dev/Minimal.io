@@ -351,6 +351,13 @@ def prepare_field(heroes, enemies, bullets) -> None:
         hero.alive = True
 
 
+def draw_score(screen_rect, text: str):
+    text_image = settings.score_font.render(text, True, settings.score_text_color)
+    text_image_rect = text_image.get_rect()
+    text_image_rect.centerx, text_image_rect.centery = screen_rect.centerx, screen_rect.centery
+    screen.blit(text_image, text_image_rect)
+
+
 @static_vars(frame_numb=0)
 def update_screen(heroes, enemies, bullets) -> None:
     """Update images on the screen and flip to the new screen."""
@@ -359,6 +366,7 @@ def update_screen(heroes, enemies, bullets) -> None:
     if update_screen.frame_numb >= k:
         update_screen.frame_numb -= k - 1
         screen.fill(settings.bg_color)
+        draw_score(screen.get_rect(), str(int(stats.last_score)))
         for hero in heroes:
             if hero.alive:
                 hero.draw()

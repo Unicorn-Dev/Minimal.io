@@ -3,12 +3,12 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 
 class Statistics:
-    """Отслеживание статистики для игры Alien Invasion."""
+    """Tracking statistics."""
     __instance = None
 
     def __init__(self):
         if not Statistics.__instance:
-            """Инициализирует статистику."""
+            """Statistics initialization."""
 
             self.game_active = False
             self.pause = False
