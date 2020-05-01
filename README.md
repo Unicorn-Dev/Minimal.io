@@ -10,9 +10,9 @@
 
 ## Архитектура программы
 ### UML
-1. Классовая UML-диаграмма программа доступна [в данном репозитории](https://github.com/Unicorn-Dev/Minimal.io/blob/new_ver_dev/UML.png) и [на данном сайте](https://www.lucidchart.com/documents/edit/079d5591-6cf0-497f-a332-7f91954b2154/0_0?shared=true#?folder_id=home&browser=icon).
-1. Use Case UML-диаграмма программа доступна [в данном репозитории]() и [на данном сайте](https://www.lucidchart.com/documents/edit/e01f34aa-e097-4f86-8c6b-b8877d6c8307/0_0?beaconFlowId=182C5F7FA851B550#?folder_id=home&browser=icon).
-1. Sequence UML-диаграмма программа доступна [в данном репозитории]() и [на данном сайте](https://www.lucidchart.com/documents/edit/aca299c7-8387-4648-a8f0-25f96f441537/0_0?beaconFlowId=C25EA2C93E844225).
+1. Классовая UML-диаграмма программа доступна [в данном репозитории](https://github.com/Unicorn-Dev/Minimal.io/blob/new_ver_dev/UML_Diagrams/Class.png) и [на данном сайте](https://www.lucidchart.com/documents/edit/079d5591-6cf0-497f-a332-7f91954b2154/0_0?shared=true#?folder_id=home&browser=icon).
+1. Sequence UML-диаграмма программа доступна [в данном репозитории](https://github.com/Unicorn-Dev/Minimal.io/blob/new_ver_dev/UML_Diagrams/Sequence.png) и [на данном сайте](https://www.lucidchart.com/documents/edit/aca299c7-8387-4648-a8f0-25f96f441537/0_0?beaconFlowId=C25EA2C93E844225).
+1. Use Case UML-диаграмма программа доступна [в данном репозитории](https://github.com/Unicorn-Dev/Minimal.io/blob/new_ver_dev/UML_Diagrams/UseCase.png) и [на данном сайте](https://www.lucidchart.com/documents/edit/e01f34aa-e097-4f86-8c6b-b8877d6c8307/0_0?beaconFlowId=182C5F7FA851B550#?folder_id=home&browser=icon).
 
 ## Запуск игры
 Для начала необходимо установить все пакеты по списку из requirements.txt коммандой:  
