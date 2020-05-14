@@ -2,6 +2,8 @@ from Application.system.stats import Statistics
 from Application.system.menu import Menu
 from Application.system.settings import Settings
 import Application.system.game_functions as gf
+from Application.system.game_functions import try_wrapper
+from Application.objects.ball import Ball
 import pygame
 
 
@@ -33,17 +35,33 @@ class Engine:
             # Make a hero and a group to store bullets in.
             self.bullets = pygame.sprite.Group()
             __instance = self
+
+            Ball.bullets = self.bullets
         else:
             raise Exception("Engine is a singleton!")
 
     def run(self) -> None:
-        gf.check_events(self.buttons, self.heroes, self.enemies, self.bullets)
+        try_wrapper(
+            'Считывание ввода с клавиатуры было неожиданно прерванно. Нам немного жаль...',
+            10, gf.check_events, *(self.buttons, self.heroes, self.enemies, self.bullets)
+        )
         if self.stats.game_active:
-            gf.update_heroes(self.heroes)
-            gf.fire_bullets(self.heroes, self.bullets, self.enemies)
-            gf.update_bullets(self.heroes, self.enemies, self.bullets)
-            gf.update_enemies(self.heroes, self.enemies, self.bullets)
-            gf.update_screen(self.heroes, self.enemies, self.bullets)
+            try_wrapper(
+                'Что-то пошло не так. Нам немного жаль...',
+                10, gf.update_balls, *(self.heroes, self.enemies)
+            )
+            try_wrapper(
+                'Что-то пошло не так. Нам немного жаль...',
+                10, gf.heroes_death_cases, *(self.heroes, self.enemies, self.bullets)
+            )
+            try_wrapper(
+                'Что-то пошло не так. Нам немного жаль...',
+                10, gf.update_bullets, *(self.heroes, self.enemies, self.bullets)
+            )
+            try_wrapper(
+                'Что-то пошло не так. Нам немного жаль...',
+                10, gf.update_screen, *(self.heroes, self.enemies, self.bullets)
+            )
         else:
             self.buttons = self.menu.show()
         self.clock.tick(self.settings.innerFPS)

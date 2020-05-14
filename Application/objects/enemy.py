@@ -3,6 +3,8 @@ from pygame.sprite import Sprite
 import pygame.draw as draw
 from random import uniform, randint
 
+from Application.objects.ball import Ball
+
 settings = None
 screen = None
 stats = None
@@ -103,40 +105,33 @@ class EnemyBuilder:
         self.__enemy.set_lifes()
 
 
-class Enemy(Sprite):
-    """Класс, представляющий одного пришельца."""
+class Enemy(Ball):
+    """Класс, представляющий одного enemy."""
 
     def __init__(self, row=0):
-        """Инициализирует пришельца и задает его начальную позицию."""
+        """Инициализирует enemy и задает его начальную позицию."""
         super().__init__()
-        self.screen = screen
-        self.settings = settings
 
         # enemy base parameters
         self.radius = randint(settings.enemy_radius // 2, settings.enemy_radius)
+
         # life is area of ball (in pixels^2 of course)
         self.life = self.radius * self.radius * 3.14
+
         # reward for killing this enemy. It is equal to self.life point in the begin
         self.reward = self.life
         self.color = settings.enemy_color
-        self.speed_x = settings.enemy_horizontal_speed
+        self.speed_x = -settings.enemy_horizontal_speed
         self.speed_y = uniform(0, settings.enemy_vertical_speed)
-        self.direction = -1
-
-        self.shield_thickness = 0
-        self.shield_life = 0
-        self.bullet_type = None
-        self.shoot_freq = None
-        self.shoot_frame_cnt = None
 
         # Сохранение точной позиции of enemy ball.
         self.cx = settings.battle_screen_width - self.radius * 2
         self.cy = float(self.radius)
-
         self.row = row
 
+        self.instance = "Enemy"
+
     def check_edges(self):
-        """Возвращает True, если пришелец находится у края экрана."""
         height = self.settings.battle_screen_height
         if height - self.radius <= self.cy:
             self.direction *= -1
@@ -145,16 +140,6 @@ class Enemy(Sprite):
             self.direction *= -1
             self.cy = self.radius
 
-    def update(self):
-        self.cx -= self.speed_x
-        self.cy += self.speed_y * self.direction
-
-    def draw(self):
-        """Выводит пришельца в текущем положении."""
-        coordinates = (int(self.cx), int(self.cy))
-        draw.circle(screen, settings.enemy_shield_color, coordinates, self.radius + self.shield_thickness)
-        draw.circle(screen, self.color, coordinates, self.radius)
-
     def set_reward(self):
         self.reward = self.life + self.shield_life
         # reward add if enemy can shoot is equivalent to his full life
@@ -162,50 +147,3 @@ class Enemy(Sprite):
         if self.bullet_type is not None:
             self.reward += self.life + self.shield_life
 
-    def set_radiuses(self):
-        """Set enemy shield and body radiuses (uses after bullet smashed enemy)"""
-        if self.life > 0:
-            self.radius = int(math.sqrt(self.life / 3.14))
-            if self.shield_life:
-                self.shield_thickness = int(math.sqrt(self.shield_life / 20))
-            else:
-                self.shield_thickness = 0
-        else:
-            self.radius = 0
-            self.shield_life = 0
-            self.shield_thickness = 0
-
-    def set_lifes(self):
-        """Set enemy shield and body radiuses (uses after bullet smashed enemy)"""
-        if self.radius > 0:
-            self.life = self.radius ** 2 * 3.14
-            if self.shield_thickness > 0:
-                self.shield_life = self.shield_thickness * self.shield_thickness * 20
-                assert self.shield_life >= 0
-        else:
-            self.life = 0
-            self.shield_life = 0
-            self.shield_thickness = 0
-
-    def fire_bullet(self, bullets):
-        """"Create an bullet if frame number is big enough."""
-        if self.bullet_type is not None:
-            assert self.shoot_freq >= 1
-            if self.shoot_frame_cnt >= self.shoot_freq:
-                self.shoot_frame_cnt -= self.shoot_freq
-                bullets.add(settings.bullet_constructors[self.bullet_type](self))
-            self.shoot_frame_cnt += 1
-
-    def receive_damage(self, bullets, bullet):
-        """Control how enemies receive damage from bullets"""
-        if bullet.father == 'Hero':
-            damage = bullet.damage / ((not stats.single_player) + 1)
-            if self.shield_life > 0:
-                self.shield_life -= damage
-                if self.shield_life <= 0:
-                    self.life += self.shield_life
-                    self.shield_life = 0
-            else:
-                self.life -= damage
-            self.set_radiuses()
-            bullets.remove(bullet)
