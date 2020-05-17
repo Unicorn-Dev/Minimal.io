@@ -22,7 +22,8 @@ class Hero(Ball):
 
         # type of his bullets, name the same ass bullet class name
         self.bullet_type = "Bullet"
-        self.shoot_freq = self.settings.innerFPS / self.settings.BulletPerSecond[self.bullet_type]
+        self.shoot_freq = self.settings.innerFPS / \
+                          self.settings.BulletPerSecond[self.bullet_type]
         self.shoot_frame_cnt = random.randint(0, 100) % self.shoot_freq
 
         self.instance = 'Hero'

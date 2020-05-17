@@ -1,3 +1,4 @@
+import sys
 from Application.system.game_functions import *
 import Application.system.game_functions as gf
 
@@ -228,13 +229,17 @@ class ChangeGunHandler(BaseHandler):
 class FirstMoveHandler(BaseHandler):
     def handle(self, request, params):
         if request.key == pygame.K_UP:
-            params[1][0].speed_y = -params[1][0].speed if request.type == pygame.KEYDOWN else 0
+            params[1][0].speed_y = -params[1][0].speed \
+                if request.type == pygame.KEYDOWN else 0
         elif request.key == pygame.K_DOWN:
-            params[1][0].speed_y = params[1][0].speed if request.type == pygame.KEYDOWN else 0
+            params[1][0].speed_y = params[1][0].speed \
+                if request.type == pygame.KEYDOWN else 0
         elif request.key == pygame.K_LEFT:
-            params[1][0].speed_x = -params[1][0].speed if request.type == pygame.KEYDOWN else 0
+            params[1][0].speed_x = -params[1][0].speed \
+                if request.type == pygame.KEYDOWN else 0
         elif request.key == pygame.K_RIGHT:
-            params[1][0].speed_x = params[1][0].speed if request.type == pygame.KEYDOWN else 0
+            params[1][0].speed_x = params[1][0].speed \
+                if request.type == pygame.KEYDOWN else 0
         self.handle_next(request, params)
 
 
@@ -242,11 +247,15 @@ class SecondMoveHandler(BaseHandler):
     def handle(self, request, params):
         if not stats.single_player:
             if request.key == pygame.K_w:
-                params[1][1].speed_y = -params[1][1].speed if request.type == pygame.KEYDOWN else 0
+                params[1][1].speed_y = -params[1][1].speed \
+                    if request.type == pygame.KEYDOWN else 0
             elif request.key == pygame.K_s:
-                params[1][1].speed_y = params[1][1].speed if request.type == pygame.KEYDOWN else 0
+                params[1][1].speed_y = params[1][1].speed \
+                    if request.type == pygame.KEYDOWN else 0
             elif request.key == pygame.K_a:
-                params[1][1].speed_x = -params[1][1].speed if request.type == pygame.KEYDOWN else 0
+                params[1][1].speed_x = -params[1][1].speed \
+                    if request.type == pygame.KEYDOWN else 0
             elif request.key == pygame.K_d:
-                params[1][1].speed_x = params[1][1].speed if request.type == pygame.KEYDOWN else 0
+                params[1][1].speed_x = params[1][1].speed \
+                    if request.type == pygame.KEYDOWN else 0
         self.handle_next(request, params)
