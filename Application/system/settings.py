@@ -18,7 +18,7 @@ class Settings:
             self.screen_dimensions = (self.screen_width, self.screen_height)
             self.bg_color = (242, 235, 227)
             self.name = "Minimal.io"
-            self.favicon = "Application/static/favicon.png"
+            self.favicon = "Application/static/favicorn.png"
             # User for update screen, inner for inner calculations
             self.userFPS = 30
             self.innerFPS = 200

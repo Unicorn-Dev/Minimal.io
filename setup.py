@@ -1,11 +1,27 @@
 from setuptools import setup
 
-setup(name='Minimalio',
-      version='0.1',
-      description='The coolest game in the world',
-      url='https://github.com/Unicorn-Dev/Minimal.io',
-      author='Unicorn-Dev',
-      author_email='Unicorn-Dev@example.com',
-      license='MIT',
-      packages=['Application'],
-      zip_safe=False)
+APP = ['main.py']
+APP_NAME = "Minimalio"
+DATA_FILES = [
+    ('Application/static', ['Application/static/favicorn.png', 
+            'Application/static/favicon.png', 
+            'Application/static/Evogria.otf',
+            'Application/static/Delvon.ttf',
+            ]
+    ),
+]
+OPTIONS = {
+    'argv_emulation': True,
+    'iconfile': 'Application/static/minimalio_icon.icns',
+}
+
+setup(
+    name=APP_NAME,
+    app=APP,
+    data_files=DATA_FILES,
+    options={'py2app': OPTIONS},
+    setup_requires=[
+        'py2app',
+        'pygame'
+        ],
+)
