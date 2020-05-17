@@ -43,12 +43,15 @@ class Engine:
             raise Exception("Engine is a singleton!")
 
     def run(self) -> None:
-        #try_wrapper(
-            #'Считывание ввода с клавиатуры было неожиданно прерванно. Нам немного жаль...',
-            #10, gf.check_events, *(self.buttons, self.heroes, self.enemies, self.bullets)
-        #)
+
         for event in pygame.event.get():
-            self.checker.monitor(event, [self.buttons, self.heroes, self.enemies, self.bullets])
+            try_wrapper(
+                'Считывание ввода с клавиатуры было неожиданно прерванно. '
+                'Нам немного жаль...',
+                10, self.checker.monitor,
+                *(event,
+                  [self.buttons, self.heroes, self.enemies, self.bullets])
+            )
         if self.stats.game_active:
             try_wrapper(
                 'Что-то пошло не так. Нам немного жаль...',
@@ -56,15 +59,18 @@ class Engine:
             )
             try_wrapper(
                 'Что-то пошло не так. Нам немного жаль...',
-                10, gf.heroes_death_cases, *(self.heroes, self.enemies, self.bullets)
+                10, gf.heroes_death_cases, *(self.heroes, self.enemies,
+                                             self.bullets)
             )
             try_wrapper(
                 'Что-то пошло не так. Нам немного жаль...',
-                10, gf.update_bullets, *(self.heroes, self.enemies, self.bullets)
+                10, gf.update_bullets, *(self.heroes, self.enemies,
+                                         self.bullets)
             )
             try_wrapper(
                 'Что-то пошло не так. Нам немного жаль...',
-                10, gf.update_screen, *(self.heroes, self.enemies, self.bullets)
+                10, gf.update_screen, *(self.heroes, self.enemies,
+                                        self.bullets)
             )
         else:
             self.buttons = self.menu.show()

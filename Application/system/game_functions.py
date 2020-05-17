@@ -1,4 +1,3 @@
-import sys
 from time import sleep
 from math import sqrt
 import pygame
@@ -61,8 +60,10 @@ def create_enemy(enemies, enemy_numbers, row) -> None:
     enemy_director = enemy_module.EnemyDirector()
     enemy_builder = enemy_module.EnemyBuilder()
     enemy = enemy_director.RandomEnemy(enemy_builder, row)
-    enemy.cx = settings.battle_screen_width - settings.enemy_radius * (1 + 3 * row)
-    enemy.cy = settings.battle_screen_height / enemy_numbers[1] * enemy_numbers[0]
+    enemy.cx = settings.battle_screen_width - settings.enemy_radius * \
+               (1 + 3 * row)
+    enemy.cy = settings.battle_screen_height / enemy_numbers[1] * \
+               enemy_numbers[0]
     enemies.add(enemy)
 
 
@@ -83,7 +84,8 @@ def check_fire_collisions(hero, enemies, bullets) -> None:
     for collision in collisions_of(bullets.sprites(), enemies.sprites()):
         collision[1].receive_damage(bullets, collision[0])
         if collision[1].radius < settings.battle_screen_width / 50:
-            stats.last_score += collision[1].reward / settings.battle_screen_width
+            stats.last_score += collision[1].reward / \
+                                settings.battle_screen_width
             enemies.remove(collision[1])
     for collision in collisions_of(bullets.sprites(), [hero]):
         hero.receive_damage(bullets, collision[0])
@@ -165,7 +167,8 @@ def heroes_death_cases(heroes, enemies, bullets) -> None:
 
 
 def is_collision(object1, object2) -> bool:
-    distance = sqrt((object1.cx - object2.cx)**2 + (object1.cy - object2.cy)**2)
+    distance = sqrt((object1.cx - object2.cx)**2 +
+                    (object1.cy - object2.cy)**2)
     return distance <= object1.radius + object2.radius
 
 
@@ -232,7 +235,8 @@ def prepare_field(heroes, enemies, bullets) -> None:
 
 
 def draw_score(screen_rect, text: str):
-    text_image = settings.score_font.render(text, True, settings.score_text_color)
+    text_image = settings.score_font.render(text, True,
+                                            settings.score_text_color)
     text_image_rect = text_image.get_rect()
     text_image_rect.centerx, text_image_rect.centery = \
         screen_rect.centerx, screen_rect.centery

@@ -20,8 +20,9 @@ def set_global_var(setts, scr, statistics):
 
 
 class EnemyDirector:
-    """"Class for user friendly work with Enemy. Have most popular in game templates for enemy.
-    In the begin Enemy director initialize self.enemy_cash so every enemy created with less calculations."""
+    """"Class for user friendly work with Enemy. Have most popular in game
+    templates for enemy. In the begin Enemy director initialize self.enemy_cash
+    so every enemy created with less calculations."""
     enemy_cash = None
 
     def __init__(self):
@@ -51,13 +52,17 @@ class EnemyDirector:
 
     @staticmethod
     def RandomEnemy(builder, row: int, radius_mult: float = 1,
-                    shield_probability: float = 0.15, shooting_probability: float = 0.15):
-        """Create and return an enemy. Enemy strength can be regulate with shield_probability and
-        shooting_probability parameters"""
-        assert isinstance(row, int) and (isinstance(radius_mult, int) or isinstance(radius_mult, float)) and \
-            (isinstance(shield_probability, int) or isinstance(shield_probability, float)) and \
-            (isinstance(shooting_probability, int) or isinstance(shooting_probability, float)) and \
-            0 <= shield_probability <= 1 and 0 <= shooting_probability <= 1
+                    shield_probability: float = 0.15,
+                    shooting_probability: float = 0.15):
+        """Create and return an enemy. Enemy strength can be regulate with
+        shield_probability and shooting_probability parameters"""
+        assert isinstance(row, int) and (isinstance(radius_mult, int)
+                                         or isinstance(radius_mult, float)) \
+               and (isinstance(shield_probability, int) or isinstance(
+            shield_probability, float)) and \
+               (isinstance(shooting_probability, int) or isinstance(
+                   shooting_probability, float)) and \
+               0 <= shield_probability <= 1 and 0 <= shooting_probability <= 1
         builder.reset()
         builder.set_raw(row)
         builder.set_radius(settings.enemy_radius * radius_mult)
@@ -85,7 +90,8 @@ class EnemyBuilder:
         self.__enemy.raw = row
 
     def set_radius(self, radius: int):
-        assert (isinstance(radius, int) or isinstance(radius, float)) and radius > 0
+        assert (isinstance(radius, int) or isinstance(radius,
+                                                      float)) and radius > 0
         self.__enemy.radius = int(radius)
         self.__enemy.set_lifes()
 
@@ -94,7 +100,8 @@ class EnemyBuilder:
 
     def set_bullets(self, bullet_type: str = 'EnemyBullet'):
         self.__enemy.bullet_type = bullet_type
-        self.__enemy.shoot_freq = settings.innerFPS / settings.BulletPerSecond[self.__enemy.bullet_type]
+        self.__enemy.shoot_freq = settings.innerFPS / settings.BulletPerSecond[
+            self.__enemy.bullet_type]
         self.__enemy.shoot_frame_cnt = randint(0, 100) % self.__enemy.shoot_freq
 
     def set_shield(self, shield_thickness: float = None) -> None:
@@ -118,7 +125,8 @@ class Enemy(Ball):
         # life is area of ball (in pixels^2 of course)
         self.life = self.radius * self.radius * 3.14
 
-        # reward for killing this enemy. It is equal to self.life point in the begin
+        # reward for killing this enemy.
+        # It is equal to self.life point in the begin
         self.reward = self.life
         self.color = settings.enemy_color
         self.speed_x = -settings.enemy_horizontal_speed
@@ -143,7 +151,7 @@ class Enemy(Ball):
     def set_reward(self):
         self.reward = self.life + self.shield_life
         # reward add if enemy can shoot is equivalent to his full life
-        # The meaning of it is that enemy with bigger life shoot bigger amount of bullets
+        # The meaning of it is that enemy with bigger
+        # life shoot bigger amount of bullets
         if self.bullet_type is not None:
             self.reward += self.life + self.shield_life
-

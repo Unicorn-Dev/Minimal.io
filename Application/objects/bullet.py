@@ -60,7 +60,8 @@ class FastBullet(Bullet):
 
 class BigBullet(Bullet):
     def __init__(self, father, radius_multiplier=3):
-        Bullet.__init__(self, father, settings.bullet_radius * radius_multiplier)
+        Bullet.__init__(self, father,
+                        settings.bullet_radius * radius_multiplier)
 
 
 class EnemyBullet(Bullet):
