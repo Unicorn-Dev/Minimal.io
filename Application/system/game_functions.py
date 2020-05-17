@@ -2,14 +2,14 @@ import sys
 from time import sleep
 from math import sqrt
 import pygame
-import traceback
+from Application.system.common_functions import *
 from Application.objects.hero import Hero
 from Application.objects.enemy import Enemy
 import Application.objects.ball as ball_module
 import Application.objects.bullet as bullet_module
 import Application.objects.enemy as enemy_module
-import Application.objects.hero as hero_module
 import Application.system.menu as menu_module
+import Application.system.events_monitor as events_monitor_module
 
 
 settings = None
@@ -28,135 +28,7 @@ def set_global_var(setts, scr, statistics) -> None:
     ball_module.set_global_var(setts, scr, statistics)
     enemy_module.set_global_var(setts, scr, statistics)
     menu_module.set_global_var(setts, scr, statistics)
-
-
-def static_vars(**kwargs):
-    def wrapper(function):
-        for key in kwargs:
-            setattr(function, key, kwargs[key])
-        return function
-    return wrapper
-
-@static_vars(errors_cnt=dict())
-def try_wrapper(message, errors_limit, funk, *args):
-    """
-        В общем это  'обертка функции', котороая просто выполняет функцию,
-    принимая ее аргументы, и следит вылетела функция или нет.
-    Если функция упала, то увеличивается счетчик ошибок на этой функции
-    и выводится трейсбек и месседж.
-        Если счетчик превышает лимит, то обертка raise Exception.
-    """
-    try:
-        funk(*args)
-    except SystemExit as e:
-        raise e
-    except:
-        traceback.print_exc()
-        print(message)
-        try:
-            try_wrapper.errors_cnt[funk]
-        except:
-            try_wrapper.errors_cnt[funk] = 0
-        try_wrapper.errors_cnt[funk] += 1
-        if (try_wrapper.errors_cnt[funk] >= errors_limit):
-            try_wrapper.errors_cnt[funk] = 0
-            raise Exception
-        
-def check_events(buttons, heroes, enemies, bullets) -> None:
-    """Respond to key presses and mouse events."""
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-        elif event.type == pygame.KEYDOWN:
-            check_key_down_events(event, heroes)
-        elif event.type == pygame.KEYUP:
-            check_key_up_events(event, heroes)
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            check_menu_buttons(buttons, heroes, enemies, bullets)
-
-
-def check_key_down_events(event, heroes) -> None:
-    """Respond to key presses."""
-    if event.key == pygame.K_q:
-        sys.exit()
-    elif event.key == pygame.K_p and not stats.game_active:
-        stats.choosing_game_type = True
-    elif event.key == pygame.K_ESCAPE and stats.game_active != stats.pause:
-        set_pause(not stats.pause)
-    elif event.key == pygame.K_ESCAPE and stats.choosing_game_type:
-        stats.choosing_game_type = False
-    elif stats.game_active:
-        # for test, remove in future
-        # you can change bullets type if press f (for fast), b (for big) or n (for normal)
-        for hero in heroes:
-            if event.key == pygame.K_n:
-                hero.change_bullets("Bullet")
-            if event.key == pygame.K_f:
-                hero.change_bullets("FastBullet")
-            if event.key == pygame.K_b:
-                hero.change_bullets("BigBullet")
-            if event.key == pygame.K_EQUALS:
-                hero.bullet_type = None
-        if event.key == pygame.K_UP:
-            heroes[0].speed_y = -heroes[0].speed
-        elif event.key == pygame.K_DOWN:
-            heroes[0].speed_y = heroes[0].speed
-        elif event.key == pygame.K_LEFT:
-            heroes[0].speed_x = -heroes[0].speed
-        elif event.key == pygame.K_RIGHT:
-            heroes[0].speed_x = heroes[0].speed
-
-        if not stats.single_player:
-            if event.key == pygame.K_w:
-                heroes[1].speed_y = -heroes[1].speed
-            elif event.key == pygame.K_s:
-                heroes[1].speed_y = heroes[1].speed
-            elif event.key == pygame.K_a:
-                heroes[1].speed_x = -heroes[1].speed
-            elif event.key == pygame.K_d:
-                heroes[1].speed_x = heroes[1].speed
-
-
-def check_key_up_events(event, heroes) -> None:
-    """Respond to key unpresses."""
-    if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-        heroes[0].speed_y = 0
-    elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-        heroes[0].speed_x = 0
-
-    if not stats.single_player:
-        if event.key == pygame.K_w or event.key == pygame.K_s:
-            heroes[1].speed_y = 0
-        elif event.key == pygame.K_a or event.key == pygame.K_d:
-            heroes[1].speed_x = 0
-
-
-def check_menu_buttons(buttons, heroes, enemies, bullets) -> None:
-    """Запускает новую игру при нажатии кнопки Play."""
-    if not stats.game_active:
-        for button in buttons:
-            button_clicked = button.rect.collidepoint(pygame.mouse.get_pos())
-            if button_clicked:
-                if button.text == 'Continue':
-                    set_pause(False)
-                elif button.text == 'Play' or button.text == 'Restart':
-                    stats.choosing_game_type = True
-                elif button.text == 'One player':
-                    stats.single_player = True
-                    heroes.clear()
-                    heroes.append(Hero())
-                    start_game(heroes, enemies, bullets)
-                elif button.text == 'Two players':
-                    stats.single_player = False
-                    heroes.clear()
-                    heroes.append(Hero())
-                    heroes.append(Hero())
-                    start_game(heroes, enemies, bullets)
-                elif button.text == 'Back':
-                    stats.choosing_game_type = False
-                elif button.text == 'Quit':
-                    sys.exit()
-                break
+    events_monitor_module.set_global_var(setts, scr, statistics)
 
 
 def start_game(heroes, enemies, bullets) -> None:
@@ -173,20 +45,19 @@ def set_pause(pause) -> None:
     stats.game_active = not pause
     pygame.mouse.set_visible(pause)
 
+
 def create_fleet(enemies) -> None:
-    """Создает флот пришельцев."""
-    # Создание пришельца и вычисление количества пришельцев в ряду.
-    # Интервал между соседними пришельцами равен одной ширине пришельца.
+    """Создает флот врагов."""
     number_enemies_row = settings.number_enemies_in_row
     number_rows = settings.number_rows_of_enemies
-    # Создание первого ряда пришельцев.
+    # Создание первого ряда врагов.
     for row in range(number_rows):
         for enemy_number in range(number_enemies_row):
             create_enemy(enemies, (enemy_number, number_enemies_row), row)
 
 
 def create_enemy(enemies, enemy_numbers, row) -> None:
-    """Создает пришельца и размещает его в ряду."""
+    """Создает врага и размещает его в ряду."""
     enemy_director = enemy_module.EnemyDirector()
     enemy_builder = enemy_module.EnemyBuilder()
     enemy = enemy_director.RandomEnemy(enemy_builder, row)
@@ -248,7 +119,8 @@ def check_enemy_collisions(enemies) -> None:
 def will_be_collision(enemy1: Enemy, enemy2: Enemy) -> bool:
     """Check if there will be a collision
     (speed V1y and V2y meet the requirements of the collision)"""
-    assert isinstance(enemy1, Enemy) and isinstance(enemy2, Enemy), 'Arguments of wrong type!'
+    assert isinstance(enemy1, Enemy) and isinstance(enemy2, Enemy), \
+        'Arguments of wrong type!'
     if enemy1.direction * enemy2.direction < 0:
         if (enemy1.direction > 0 and enemy1.cy < enemy2.cy)\
                 or (enemy1.direction < 0 and enemy1.cy > enemy2.cy):
@@ -314,7 +186,8 @@ def enemies_flied(enemies) -> bool:
 
 
 def hero_die(hero):
-    """Handle cases when hero collision with enough enemies or hero receive to many damage from enemy bullets."""
+    """ Handle cases when hero collision with enough enemies or hero
+     receive too many damage from enemy bullets."""
     # reset radius
     hero.radius = settings.hero_radius
     hero.life = hero.radius * hero.radius * 3.14
@@ -347,11 +220,11 @@ def everybody_absolutely_dead(heroes) -> bool:
 
 
 def prepare_field(heroes, enemies, bullets) -> None:
-    # Очистка списков пришельцев и пуль.
+    # Очистка списков врагов и пуль.
     enemies.empty()
     bullets.empty()
 
-    # Создание нового флота и размещение корабля в центре.
+    # Создание нового флота и размещение героев в центре.
     create_fleet(enemies)
     for hero in heroes:
         hero.move_to_default_position()
@@ -361,7 +234,8 @@ def prepare_field(heroes, enemies, bullets) -> None:
 def draw_score(screen_rect, text: str):
     text_image = settings.score_font.render(text, True, settings.score_text_color)
     text_image_rect = text_image.get_rect()
-    text_image_rect.centerx, text_image_rect.centery = screen_rect.centerx, screen_rect.centery
+    text_image_rect.centerx, text_image_rect.centery = \
+        screen_rect.centerx, screen_rect.centery
     screen.blit(text_image, text_image_rect)
 
 

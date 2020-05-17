@@ -1,5 +1,5 @@
-import traceback
-from Application.system.game_functions import try_wrapper
+from Application.system.common_functions import try_wrapper
+
 
 def run_game():
     from Application.system.engine import Engine
