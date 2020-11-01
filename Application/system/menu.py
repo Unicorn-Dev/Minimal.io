@@ -147,8 +147,10 @@ class Button:
         self.msg_image_rect = self.msg_image.get_rect()
         self.msg_image_rect.center = self.screen_rect.center
 
-        self.width = max(self.msg_image_rect.width * 1.3, settings.screen_width // 4)
-        self.height = max(self.msg_image_rect.height * 1.4, settings.screen_height // 10)
+        self.width = max(self.msg_image_rect.width * 1.3,
+                         settings.screen_width // 4)
+        self.height = max(self.msg_image_rect.height * 1.4,
+                          settings.screen_height // 10)
 
         # Построение объекта rect кнопки и выравнивание по центру экрана.
         self.rect = pygame.Rect(0, 0, self.width, self.height)
