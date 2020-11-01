@@ -9,7 +9,8 @@ class Settings:
 
             """Initialize the game's settings."""
             # Screen settings
-            # Screen_width and screen_height - dimensions of application screen.
+            # Screen_width and screen_height -
+            # dimensions of application screen.
             # Added for more easiest ability to resize window.
             self.screen_width = 800
             self.screen_height = 480
@@ -18,7 +19,7 @@ class Settings:
             self.screen_dimensions = (self.screen_width, self.screen_height)
             self.bg_color = (242, 235, 227)
             self.name = "Minimal.io"
-            self.favicon = "Application/static/favicon.png"
+            self.favicon = "Application/static/favicorn.png"
             # User for update screen, inner for inner calculations
             self.userFPS = 30
             self.innerFPS = 200
@@ -33,7 +34,8 @@ class Settings:
             # Bullet settings
             self.bullet_radius = self.hero_radius // 8
             self.bullet_speed = 600 / self.innerFPS
-            # For function that create bullets each next bullet_create_frame frame
+            # For function that create bullets each
+            # next bullet_create_frame frame
             # 10 - for Bullet, 13 - for FastBullet
             self.BulletPerSecond = {
                 "Bullet": 6,
@@ -62,16 +64,19 @@ class Settings:
             # Menu settings
             self.menu_text_color = (94, 82, 86)
             self.menu_font_height = 60
-            self.menu_font = font.Font('Application/static/Evogria.otf', self.menu_font_height)
+            self.menu_font = font.Font('Application/static/Evogria.otf',
+                                       self.menu_font_height)
             self.button_color = (214, 168, 142)
             self.button_text_color = (255, 255, 255)
             self.button_font_height = 40
-            self.button_font = font.Font('Application/static/Delvon.ttf', self.button_font_height)
+            self.button_font = font.Font('Application/static/Delvon.ttf',
+                                         self.button_font_height)
 
             # battlefield screen settings
             self.score_text_color = (94, 82, 86)
             self.score_font_height = 60
-            self.score_font = font.Font('Application/static/Evogria.otf', self.score_font_height)
+            self.score_font = font.Font('Application/static/Evogria.otf',
+                                        self.score_font_height)
 
             Settings.__instance = self
         else:
